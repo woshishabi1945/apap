@@ -203,7 +203,7 @@
         return data || [];
     }
     
-    // 修复：只在 diaries 表中添加 user_id: 0（replies 表没有 user_id 列）
+    // 添加日记（diaries 表有 user_id 列，必须给值）
     async function addDiary(title, content) {
         const now = new Date();
         const dateStr = `${now.getFullYear()}-${String(now.getMonth()+1).padStart(2,'0')}-${String(now.getDate()).padStart(2,'0')} ${String(now.getHours()).padStart(2,'0')}:${String(now.getMinutes()).padStart(2,'0')}`;
@@ -233,7 +233,7 @@
         return true;
     }
     
-    // replies 表没有 user_id 列，所以不添加
+    // 添加回复（replies 表没有 user_id 列，绝对不包含）
     async function addReply(diaryId, content, parentReplyId = null) {
         const now = new Date();
         const newId = Date.now();
