@@ -1,0 +1,529 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+    <title>三人日记本 · 公开日记墙</title>
+    <!-- Eruda 调试工具（可删除） -->
+    <script src="https://cdn.jsdelivr.net/npm/eruda"></script>
+    <script>eruda.init();</script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,300;14..32,400;14..32,500;14..32,600;14..32,700&family=Cormorant+Garamond:ital@0;1&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <style>
+        * { margin:0; padding:0; box-sizing:border-box; }
+        body {
+            font-family: 'Inter', sans-serif;
+            background: linear-gradient(145deg, #fef7e8, #fde9dd);
+            min-height: 100vh;
+            padding: 24px 16px;
+            color: #2c2418;
+        }
+        .container {
+            max-width: 650px;
+            margin: 0 auto;
+            background: rgba(255, 251, 245, 0.96);
+            backdrop-filter: blur(2px);
+            border-radius: 48px;
+            padding: 28px 24px;
+            box-shadow: 0 25px 45px -12px rgba(0,0,0,0.2);
+            border: 1px solid rgba(230, 200, 170, 0.5);
+        }
+        .hero {
+            text-align: center;
+            margin-bottom: 28px;
+        }
+        .hero h1 {
+            font-size: 2rem;
+            font-weight: 700;
+            background: linear-gradient(120deg, #bc7a44, #d49c6c);
+            background-clip: text;
+            -webkit-background-clip: text;
+            color: transparent;
+            display: inline-flex;
+            align-items: center;
+            gap: 10px;
+        }
+        .hero p {
+            color: #b27a50;
+            font-size: 0.85rem;
+            margin-top: 8px;
+        }
+        .auth-bar {
+            background: #fff6ed;
+            border-radius: 60px;
+            padding: 12px 20px;
+            margin-bottom: 24px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 12px;
+            border: 1px solid #f0e2d4;
+        }
+        .login-form {
+            display: flex;
+            gap: 12px;
+            flex-wrap: wrap;
+            align-items: center;
+        }
+        .login-form input {
+            padding: 8px 16px;
+            border-radius: 60px;
+            border: 1px solid #eedbcb;
+            background: white;
+            font-size: 0.9rem;
+            outline: none;
+        }
+        .login-form button, .logout-btn {
+            background: #c88a5c;
+            border: none;
+            padding: 8px 20px;
+            border-radius: 60px;
+            color: white;
+            font-weight: 600;
+            cursor: pointer;
+        }
+        .welcome {
+            font-weight: 600;
+            color: #5e3a22;
+        }
+        .logout-btn {
+            background: #d9aa82;
+        }
+        .search-box {
+            background: white;
+            border-radius: 60px;
+            display: flex;
+            align-items: center;
+            padding: 8px 16px;
+            gap: 8px;
+            margin-bottom: 20px;
+            border: 1px solid #f0e0cf;
+        }
+        .search-box i {
+            color: #c88a5c;
+        }
+        .search-box input {
+            background: none;
+            border: none;
+            outline: none;
+            width: 100%;
+            font-size: 0.9rem;
+        }
+        .diary-list {
+            display: flex;
+            flex-direction: column;
+            gap: 18px;
+            max-height: 460px;
+            overflow-y: auto;
+        }
+        .diary-item {
+            background: white;
+            border-radius: 28px;
+            padding: 18px 20px;
+            box-shadow: 0 8px 18px -8px rgba(0,0,0,0.05);
+            border-left: 8px solid #e7bc91;
+        }
+        .diary-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: baseline;
+            flex-wrap: wrap;
+            margin-bottom: 8px;
+        }
+        .diary-username {
+            font-weight: 700;
+            color: #c88a5c;
+            font-size: 0.85rem;
+            background: #fef0e6;
+            padding: 4px 12px;
+            border-radius: 40px;
+        }
+        .diary-title {
+            font-weight: 800;
+            font-size: 1.2rem;
+            color: #4a2e1c;
+            margin: 8px 0 4px;
+        }
+        .diary-date {
+            font-size: 0.7rem;
+            color: #b0825c;
+            margin: 4px 0 8px;
+        }
+        .diary-content {
+            font-size: 0.9rem;
+            color: #5e4430;
+            line-height: 1.5;
+            margin: 12px 0;
+            white-space: pre-wrap;
+        }
+        .delete-btn {
+            background: none;
+            border: none;
+            color: #d9996e;
+            cursor: pointer;
+            font-size: 0.75rem;
+            padding: 4px 8px;
+        }
+        .delete-btn.own {
+            color: #c0422a;
+            font-weight: bold;
+        }
+        .empty {
+            text-align: center;
+            padding: 40px;
+            color: #c29a74;
+        }
+        .add-btn {
+            background: #c88a5c;
+            border: none;
+            border-radius: 60px;
+            padding: 12px 24px;
+            color: white;
+            font-weight: bold;
+            width: 100%;
+            margin-top: 16px;
+            cursor: pointer;
+            font-size: 1rem;
+        }
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0; left: 0;
+            width: 100%; height: 100%;
+            background: rgba(0,0,0,0.5);
+            backdrop-filter: blur(6px);
+            z-index: 10000;
+            align-items: center;
+            justify-content: center;
+        }
+        .modal-content {
+            background: #fffdf9;
+            width: 85%;
+            max-width: 460px;
+            border-radius: 48px;
+            padding: 28px;
+        }
+        .modal-content input, .modal-content textarea {
+            width: 100%;
+            padding: 14px;
+            margin: 10px 0;
+            border: 1px solid #eedbcb;
+            border-radius: 48px;
+            font-family: inherit;
+        }
+        .modal-content textarea {
+            min-height: 100px;
+            border-radius: 28px;
+        }
+        .modal-buttons {
+            display: flex;
+            gap: 12px;
+            justify-content: flex-end;
+            margin-top: 16px;
+        }
+        .btn-save { background: #c88a5c; color: white; border: none; padding: 8px 20px; border-radius: 60px; cursor: pointer; }
+        .btn-cancel { background: #e9dfd3; border: none; padding: 8px 20px; border-radius: 60px; cursor: pointer; }
+        footer {
+            text-align: center;
+            font-size: 0.7rem;
+            color: #d7b48c;
+            margin-top: 24px;
+        }
+    </style>
+</head>
+<body>
+<div class="container">
+    <div class="hero">
+        <h1><i class="fas fa-globe"></i> 日记 <i class="fas fa-feather-alt"></i></h1>
+        <p>登录后写下你的故事 · 所有人可见</p>
+    </div>
+
+    <div id="authArea" class="auth-bar"></div>
+    <div class="search-box">
+        <i class="fas fa-search"></i>
+        <input type="text" id="searchInput" placeholder="搜索日记...">
+    </div>
+    <div id="diaryList" class="diary-list"></div>
+    <button id="addBtn" class="add-btn" style="display: none;"><i class="fas fa-plus-circle"></i> 写日记</button>
+    <footer>☁️ 云端保存 · 所有朋友的日记都展示在这里</footer>
+</div>
+
+<div id="modal" class="modal">
+    <div class="modal-content">
+        <h3><i class="fas fa-pen-fancy"></i> 新日记</h3>
+        <input type="text" id="titleInput" placeholder="标题">
+        <textarea id="contentInput" rows="4" placeholder="写下你的心情..."></textarea>
+        <div class="modal-buttons">
+            <button id="cancelModal" class="btn-cancel">取消</button>
+            <button id="saveModal" class="btn-save">保存</button>
+        </div>
+    </div>
+</div>
+
+<script>
+    // ====================== Supabase 配置 ======================
+    const SUPABASE_URL = "https://jjrwfiamjwryxkfpbopy.supabase.co";
+    const SUPABASE_ANON_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImpqcndmaWFtandyeXhrZnBib3B5Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzUxNjI1NjIsImV4cCI6MjA5MDczODU2Mn0.OUOGJp6JBjsHHelx9lbh_bE2rYeUh5QG0BuOtVN8cew";
+    const sbClient = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+
+    // 硬编码账号
+    const usersDB = [
+        { username: "苹果", password: "34679134" },
+        { username: "周灿", password: "345187213" },
+        { username: "甜心", password: "243157318" }
+    ];
+
+    let currentUser = null;
+    let allDiaries = [];
+    let searchKeyword = "";
+
+    // DOM 元素
+    const authArea = document.getElementById("authArea");
+    const diaryListDiv = document.getElementById("diaryList");
+    const addBtn = document.getElementById("addBtn");
+    const modal = document.getElementById("modal");
+    const titleInput = document.getElementById("titleInput");
+    const contentInput = document.getElementById("contentInput");
+    const searchInput = document.getElementById("searchInput");
+
+    // ====================== 保存/读取账号密码 ======================
+    function saveCredentials(username, password) {
+        localStorage.setItem("saved_username", username);
+        localStorage.setItem("saved_password", password);
+    }
+
+    function clearCredentials() {
+        localStorage.removeItem("saved_username");
+        localStorage.removeItem("saved_password");
+    }
+
+    function getSavedCredentials() {
+        const username = localStorage.getItem("saved_username");
+        const password = localStorage.getItem("saved_password");
+        if (username && password) return { username, password };
+        return null;
+    }
+
+    // ====================== 登录/登出界面 ======================
+    function renderAuthArea() {
+        if (!currentUser) {
+            const saved = getSavedCredentials();
+            authArea.innerHTML = `
+                <div class="login-form">
+                    <input type="text" id="loginUsername" placeholder="用户名" autocomplete="off" value="${saved ? saved.username : ''}">
+                    <input type="password" id="loginPassword" placeholder="密码" value="${saved ? saved.password : ''}">
+                    <button id="doLoginBtn">登录</button>
+                </div>
+            `;
+            document.getElementById("doLoginBtn")?.addEventListener("click", doLogin);
+            addBtn.style.display = "none";
+        } else {
+            authArea.innerHTML = `
+                <div class="welcome"><i class="fas fa-user-circle"></i> 欢迎，${currentUser}</div>
+                <button id="logoutBtn" class="logout-btn">登出</button>
+            `;
+            document.getElementById("logoutBtn")?.addEventListener("click", doLogout);
+            addBtn.style.display = "block";
+        }
+    }
+
+    function doLogin() {
+        const username = document.getElementById("loginUsername").value.trim();
+        const password = document.getElementById("loginPassword").value.trim();
+        const user = usersDB.find(u => u.username === username && u.password === password);
+        if (user) {
+            currentUser = user.username;
+            saveCredentials(username, password);
+            renderAuthArea();
+            refreshDiaries();
+        } else {
+            alert("用户名或密码错误");
+        }
+    }
+
+    function doLogout() {
+        currentUser = null;
+        clearCredentials();
+        renderAuthArea();
+        allDiaries = [];
+        renderDiaryList();
+        addBtn.style.display = "none";
+    }
+
+    async function autoLogin() {
+        const saved = getSavedCredentials();
+        if (saved) {
+            const user = usersDB.find(u => u.username === saved.username && u.password === saved.password);
+            if (user) {
+                currentUser = user.username;
+                renderAuthArea();
+                await refreshDiaries();
+                return true;
+            } else {
+                clearCredentials();
+            }
+        }
+        renderAuthArea();
+        return false;
+    }
+
+    // ====================== 云端操作（获取所有日记，不按用户过滤） ======================
+    async function loadDiaries() {
+        // 获取所有日记，按时间倒序
+        const { data, error } = await sbClient
+            .from('diaries')
+            .select('*')
+            .order('created_at', { ascending: false });
+        if (error) {
+            console.error(error);
+            if (error.message.includes("does not exist")) {
+                alert("❌ 未找到 diaries 表，请先创建表。");
+            }
+            return [];
+        }
+        return data || [];
+    }
+
+    async function addDiary(title, content) {
+        const now = new Date();
+        const dateStr = `${now.getFullYear()}-${String(now.getMonth()+1).padStart(2,'0')}-${String(now.getDate()).padStart(2,'0')} ${String(now.getHours()).padStart(2,'0')}:${String(now.getMinutes()).padStart(2,'0')}`;
+        const newId = Date.now();
+        const { error } = await sbClient.from('diaries').insert([{
+            id: newId,
+            user_id: 0,
+            username: currentUser,   // 保存当前登录用户名
+            title: title,
+            content: content,
+            date_str: dateStr,
+            created_at: now.toISOString()
+        }]);
+        if (error) {
+            alert("保存失败: " + error.message);
+            return false;
+        }
+        return true;
+    }
+
+    async function deleteDiary(id, diaryUsername) {
+        // 只允许删除自己的日记
+        if (diaryUsername !== currentUser) {
+            alert("只能删除自己的日记哦");
+            return false;
+        }
+        const { error } = await sbClient.from('diaries').delete().eq('id', id);
+        if (error) {
+            alert("删除失败: " + error.message);
+            return false;
+        }
+        return true;
+    }
+
+    // ====================== 渲染日记列表（显示所有人） ======================
+    function renderDiaryList() {
+        if (!currentUser) {
+            diaryListDiv.innerHTML = `<div class="empty">🔐 请先登录查看大家的日记</div>`;
+            return;
+        }
+        let list = allDiaries;
+        if (searchKeyword.trim() !== "") {
+            const kw = searchKeyword.trim().toLowerCase();
+            list = list.filter(d => d.title.toLowerCase().includes(kw) || d.content.toLowerCase().includes(kw));
+        }
+        if (list.length === 0) {
+            diaryListDiv.innerHTML = `<div class="empty"><i class="far fa-sad-tear"></i> 暂无日记，点击「写日记」记录吧 ✨</div>`;
+            return;
+        }
+        diaryListDiv.innerHTML = "";
+        for (let d of list) {
+            const isOwn = (d.username === currentUser);
+            const div = document.createElement("div");
+            div.className = "diary-item";
+            div.innerHTML = `
+                <div class="diary-header">
+                    <span class="diary-username"><i class="fas fa-user-pen"></i> ${escapeHtml(d.username)}</span>
+                </div>
+                <div class="diary-title">📘 ${escapeHtml(d.title)}</div>
+                <div class="diary-date"><i class="far fa-calendar-alt"></i> ${d.date_str}</div>
+                <div class="diary-content">${escapeHtml(d.content)}</div>
+                <button class="delete-btn ${isOwn ? 'own' : ''}" data-id="${d.id}" data-username="${escapeHtml(d.username)}">${isOwn ? '🗑️ 删除' : '🔒 无权删除'}</button>
+            `;
+            diaryListDiv.appendChild(div);
+        }
+        // 绑定删除事件
+        document.querySelectorAll(".delete-btn").forEach(btn => {
+            btn.onclick = async function(e) {
+                e.stopPropagation();
+                const id = parseInt(this.getAttribute("data-id"));
+                const diaryUsername = this.getAttribute("data-username");
+                if (diaryUsername !== currentUser) {
+                    alert("只能删除自己的日记哦");
+                    return;
+                }
+                if (confirm("确定删除这篇日记吗？")) {
+                    const ok = await deleteDiary(id, diaryUsername);
+                    if (ok) await refreshDiaries();
+                }
+            };
+        });
+    }
+
+    function escapeHtml(str) {
+        if (!str) return "";
+        return str.replace(/[&<>]/g, function(m) {
+            if (m === '&') return '&amp;';
+            if (m === '<') return '&lt;';
+            if (m === '>') return '&gt;';
+            return m;
+        });
+    }
+
+    async function refreshDiaries() {
+        allDiaries = await loadDiaries();
+        renderDiaryList();
+    }
+
+    // ====================== 写日记弹窗 ======================
+    function openModal() {
+        modal.style.display = "flex";
+        titleInput.value = "";
+        contentInput.value = "";
+    }
+    function closeModal() { modal.style.display = "none"; }
+    async function handleSave() {
+        const title = titleInput.value.trim();
+        const content = contentInput.value.trim();
+        if (!title || !content) {
+            alert("请填写标题和内容");
+            return;
+        }
+        const ok = await addDiary(title, content);
+        if (ok) {
+            closeModal();
+            await refreshDiaries();
+        }
+    }
+
+    // ====================== 事件绑定 ======================
+    function bindEvents() {
+        addBtn.onclick = openModal;
+        document.getElementById("cancelModal")?.addEventListener("click", closeModal);
+        document.getElementById("saveModal")?.addEventListener("click", handleSave);
+        modal.onclick = (e) => { if (e.target === modal) closeModal(); };
+        searchInput.oninput = (e) => {
+            searchKeyword = e.target.value;
+            renderDiaryList();
+        };
+    }
+
+    // ====================== 初始化 ======================
+    async function init() {
+        bindEvents();
+        await autoLogin();
+    }
+
+    init();
+</script>
+</body>
+</html>
