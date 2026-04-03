@@ -203,14 +203,14 @@
         return data || [];
     }
     
-    // 修复：添加 user_id: 0 避免非空约束错误
+    // 修复：只在 diaries 表中添加 user_id: 0（replies 表没有 user_id 列）
     async function addDiary(title, content) {
         const now = new Date();
         const dateStr = `${now.getFullYear()}-${String(now.getMonth()+1).padStart(2,'0')}-${String(now.getDate()).padStart(2,'0')} ${String(now.getHours()).padStart(2,'0')}:${String(now.getMinutes()).padStart(2,'0')}`;
         const newId = Date.now();
         const { error } = await sbClient.from('diaries').insert([{
             id: newId,
-            user_id: 0,  // 关键修复：添加 user_id 默认值
+            user_id: 0,
             username: currentUser,
             title, content,
             date_str: dateStr,
@@ -233,14 +233,13 @@
         return true;
     }
     
-    // 修复：添加 user_id: 0 避免非空约束错误
+    // replies 表没有 user_id 列，所以不添加
     async function addReply(diaryId, content, parentReplyId = null) {
         const now = new Date();
         const newId = Date.now();
         const { error } = await sbClient.from('replies').insert([{
             id: newId,
             diary_id: diaryId,
-            user_id: 0,  // 关键修复：添加 user_id 默认值
             username: currentUser,
             content: content,
             parent_reply_id: parentReplyId,
