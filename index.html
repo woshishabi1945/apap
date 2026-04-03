@@ -3,11 +3,10 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
-    <title>三人日记本 · 公开日记墙</title>
-    <!-- Eruda 调试工具（可删除） -->
+    <title>三人日记本</title>
     <script src="https://cdn.jsdelivr.net/npm/eruda"></script>
     <script>eruda.init();</script>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,300;14..32,400;14..32,500;14..32,600;14..32,700&family=Cormorant+Garamond:ital@0;1&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,300;14..32,400;14..32,500;14..32,600;14..32,700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <style>
@@ -20,10 +19,9 @@
             color: #2c2418;
         }
         .container {
-            max-width: 650px;
+            max-width: 700px;
             margin: 0 auto;
             background: rgba(255, 251, 245, 0.96);
-            backdrop-filter: blur(2px);
             border-radius: 48px;
             padding: 28px 24px;
             box-shadow: 0 25px 45px -12px rgba(0,0,0,0.2);
@@ -40,9 +38,6 @@
             background-clip: text;
             -webkit-background-clip: text;
             color: transparent;
-            display: inline-flex;
-            align-items: center;
-            gap: 10px;
         }
         .hero p {
             color: #b27a50;
@@ -114,8 +109,8 @@
         .diary-list {
             display: flex;
             flex-direction: column;
-            gap: 18px;
-            max-height: 460px;
+            gap: 28px;
+            max-height: 550px;
             overflow-y: auto;
         }
         .diary-item {
@@ -158,17 +153,89 @@
             margin: 12px 0;
             white-space: pre-wrap;
         }
-        .delete-btn {
+        .delete-diary-btn {
             background: none;
             border: none;
             color: #d9996e;
             cursor: pointer;
             font-size: 0.75rem;
             padding: 4px 8px;
+            margin-bottom: 12px;
         }
-        .delete-btn.own {
-            color: #c0422a;
-            font-weight: bold;
+        .replies-section {
+            margin-top: 16px;
+            border-top: 1px solid #f0e0cf;
+            padding-top: 12px;
+        }
+        .reply-item {
+            background: #fef9f2;
+            border-radius: 20px;
+            padding: 10px 14px;
+            margin-bottom: 10px;
+            font-size: 0.85rem;
+            position: relative;
+        }
+        .reply-item.reply-nested {
+            margin-left: 20px;
+            border-left: 3px solid #e7bc91;
+        }
+        .reply-header {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 6px;
+            font-size: 0.7rem;
+            color: #c88a5c;
+            font-weight: 600;
+        }
+        .reply-quote {
+            background: #f4e8dd;
+            padding: 6px 10px;
+            border-radius: 16px;
+            margin-bottom: 8px;
+            font-size: 0.75rem;
+            color: #8b694a;
+            border-left: 3px solid #d9aa82;
+        }
+        .reply-content {
+            color: #5e4430;
+        }
+        .reply-actions {
+            margin-top: 8px;
+            text-align: right;
+        }
+        .reply-action-btn {
+            background: none;
+            border: none;
+            color: #c88a5c;
+            font-size: 0.7rem;
+            cursor: pointer;
+            padding: 2px 8px;
+        }
+        .reply-form {
+            display: flex;
+            gap: 8px;
+            margin-top: 12px;
+            align-items: center;
+            flex-wrap: wrap;
+        }
+        .reply-input {
+            flex: 1;
+            padding: 8px 14px;
+            border-radius: 40px;
+            border: 1px solid #eedbcb;
+            background: white;
+            font-size: 0.8rem;
+            outline: none;
+        }
+        .reply-btn {
+            background: #d9aa82;
+            border: none;
+            padding: 6px 16px;
+            border-radius: 40px;
+            color: white;
+            font-weight: 600;
+            cursor: pointer;
+            font-size: 0.75rem;
         }
         .empty {
             text-align: center;
@@ -236,10 +303,9 @@
 <body>
 <div class="container">
     <div class="hero">
-        <h1><i class="fas fa-globe"></i> 日记 <i class="fas fa-feather-alt"></i></h1>
-        <p>登录后写下你的故事 · 所有人可见</p>
+        <h1><i class="fas fa-comments"></i> 三人</h1>
+        <p>登录 · 写日记 · 互相回复 · 可引用回复</p>
     </div>
-
     <div id="authArea" class="auth-bar"></div>
     <div class="search-box">
         <i class="fas fa-search"></i>
@@ -247,7 +313,7 @@
     </div>
     <div id="diaryList" class="diary-list"></div>
     <button id="addBtn" class="add-btn" style="display: none;"><i class="fas fa-plus-circle"></i> 写日记</button>
-    <footer>☁️ 云端保存 · 所有朋友的日记都展示在这里</footer>
+    <footer>☁️ 云端保存 · 点击任意回复下的「回复」可引用对方</footer>
 </div>
 
 <div id="modal" class="modal">
@@ -262,13 +328,14 @@
     </div>
 </div>
 
+<!-- 引用回复的简单弹窗（用 prompt 代替，简单可靠） -->
 <script>
     // ====================== Supabase 配置 ======================
     const SUPABASE_URL = "https://jjrwfiamjwryxkfpbopy.supabase.co";
     const SUPABASE_ANON_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImpqcndmaWFtandyeXhrZnBib3B5Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzUxNjI1NjIsImV4cCI6MjA5MDczODU2Mn0.OUOGJp6JBjsHHelx9lbh_bE2rYeUh5QG0BuOtVN8cew";
     const sbClient = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 
-    // 硬编码账号
+    // 固定账号
     const usersDB = [
         { username: "苹果", password: "34679134" },
         { username: "周灿", password: "345187213" },
@@ -277,6 +344,7 @@
 
     let currentUser = null;
     let allDiaries = [];
+    let allReplies = [];   // 存储所有回复（包括父子）
     let searchKeyword = "";
 
     // DOM 元素
@@ -288,22 +356,19 @@
     const contentInput = document.getElementById("contentInput");
     const searchInput = document.getElementById("searchInput");
 
-    // ====================== 保存/读取账号密码 ======================
+    // 保存/读取账号密码
     function saveCredentials(username, password) {
         localStorage.setItem("saved_username", username);
         localStorage.setItem("saved_password", password);
     }
-
     function clearCredentials() {
         localStorage.removeItem("saved_username");
         localStorage.removeItem("saved_password");
     }
-
     function getSavedCredentials() {
-        const username = localStorage.getItem("saved_username");
-        const password = localStorage.getItem("saved_password");
-        if (username && password) return { username, password };
-        return null;
+        const u = localStorage.getItem("saved_username");
+        const p = localStorage.getItem("saved_password");
+        return (u && p) ? { username: u, password: p } : null;
     }
 
     // ====================== 登录/登出界面 ======================
@@ -312,7 +377,7 @@
             const saved = getSavedCredentials();
             authArea.innerHTML = `
                 <div class="login-form">
-                    <input type="text" id="loginUsername" placeholder="用户名" autocomplete="off" value="${saved ? saved.username : ''}">
+                    <input type="text" id="loginUsername" placeholder="用户名" value="${saved ? saved.username : ''}">
                     <input type="password" id="loginPassword" placeholder="密码" value="${saved ? saved.password : ''}">
                     <button id="doLoginBtn">登录</button>
                 </div>
@@ -337,7 +402,7 @@
             currentUser = user.username;
             saveCredentials(username, password);
             renderAuthArea();
-            refreshDiaries();
+            refreshAllData();
         } else {
             alert("用户名或密码错误");
         }
@@ -348,41 +413,32 @@
         clearCredentials();
         renderAuthArea();
         allDiaries = [];
+        allReplies = [];
         renderDiaryList();
         addBtn.style.display = "none";
     }
 
     async function autoLogin() {
         const saved = getSavedCredentials();
-        if (saved) {
-            const user = usersDB.find(u => u.username === saved.username && u.password === saved.password);
-            if (user) {
-                currentUser = user.username;
-                renderAuthArea();
-                await refreshDiaries();
-                return true;
-            } else {
-                clearCredentials();
-            }
+        if (saved && usersDB.find(u => u.username === saved.username && u.password === saved.password)) {
+            currentUser = saved.username;
+            renderAuthArea();
+            await refreshAllData();
+        } else {
+            renderAuthArea();
         }
-        renderAuthArea();
-        return false;
     }
 
-    // ====================== 云端操作（获取所有日记，不按用户过滤） ======================
+    // ====================== 数据操作 ======================
     async function loadDiaries() {
-        // 获取所有日记，按时间倒序
-        const { data, error } = await sbClient
-            .from('diaries')
-            .select('*')
-            .order('created_at', { ascending: false });
-        if (error) {
-            console.error(error);
-            if (error.message.includes("does not exist")) {
-                alert("❌ 未找到 diaries 表，请先创建表。");
-            }
-            return [];
-        }
+        const { data, error } = await sbClient.from('diaries').select('*').order('created_at', { ascending: false });
+        if (error) { console.error(error); alert("加载日记失败"); return []; }
+        return data || [];
+    }
+
+    async function loadReplies() {
+        const { data, error } = await sbClient.from('replies').select('*').order('created_at', { ascending: true });
+        if (error) { console.error(error); alert("加载回复失败"); return []; }
         return data || [];
     }
 
@@ -392,38 +448,58 @@
         const newId = Date.now();
         const { error } = await sbClient.from('diaries').insert([{
             id: newId,
-            user_id: 0,
-            username: currentUser,   // 保存当前登录用户名
-            title: title,
-            content: content,
+            username: currentUser,
+            title, content,
             date_str: dateStr,
             created_at: now.toISOString()
         }]);
-        if (error) {
-            alert("保存失败: " + error.message);
-            return false;
-        }
+        if (error) { alert("保存失败: " + error.message); return false; }
         return true;
     }
 
-    async function deleteDiary(id, diaryUsername) {
-        // 只允许删除自己的日记
-        if (diaryUsername !== currentUser) {
-            alert("只能删除自己的日记哦");
-            return false;
-        }
-        const { error } = await sbClient.from('diaries').delete().eq('id', id);
-        if (error) {
-            alert("删除失败: " + error.message);
-            return false;
-        }
+    async function deleteDiary(diaryId) {
+        await sbClient.from('replies').delete().eq('diary_id', diaryId);
+        const { error } = await sbClient.from('diaries').delete().eq('id', diaryId);
+        if (error) { alert("删除失败: " + error.message); return false; }
         return true;
     }
 
-    // ====================== 渲染日记列表（显示所有人） ======================
+    // 增加回复，支持 parent_reply_id
+    async function addReply(diaryId, content, parentReplyId = null) {
+        const now = new Date();
+        const newId = Date.now();
+        const { error } = await sbClient.from('replies').insert([{
+            id: newId,
+            diary_id: diaryId,
+            username: currentUser,
+            content: content,
+            parent_reply_id: parentReplyId,
+            created_at: now.toISOString()
+        }]);
+        if (error) { alert("回复失败: " + error.message); return false; }
+        return true;
+    }
+
+    async function refreshAllData() {
+        if (!currentUser) return;
+        allDiaries = await loadDiaries();
+        allReplies = await loadReplies();
+        renderDiaryList();
+    }
+
+    // ====================== 构建回复树（扁平展示 + 引用显示） ======================
+    // 为了简单，我们按时间顺序显示所有回复，但如果是子回复，会缩进并显示“回复 @父回复人: 父回复内容摘要”
+    function getReplyQuote(reply, repliesMap) {
+        if (!reply.parent_reply_id) return null;
+        const parent = repliesMap.get(reply.parent_reply_id);
+        if (!parent) return null;
+        const parentPreview = parent.content.length > 50 ? parent.content.substring(0, 50) + "…" : parent.content;
+        return { username: parent.username, contentPreview: parentPreview };
+    }
+
     function renderDiaryList() {
         if (!currentUser) {
-            diaryListDiv.innerHTML = `<div class="empty">🔐 请先登录查看大家的日记</div>`;
+            diaryListDiv.innerHTML = `<div class="empty">🔐 请先登录查看大家的日记和回复</div>`;
             return;
         }
         let list = allDiaries;
@@ -432,38 +508,109 @@
             list = list.filter(d => d.title.toLowerCase().includes(kw) || d.content.toLowerCase().includes(kw));
         }
         if (list.length === 0) {
-            diaryListDiv.innerHTML = `<div class="empty"><i class="far fa-sad-tear"></i> 暂无日记，点击「写日记」记录吧 ✨</div>`;
+            diaryListDiv.innerHTML = `<div class="empty">✨ 暂无日记，点击「写日记」开始记录吧</div>`;
             return;
         }
         diaryListDiv.innerHTML = "";
-        for (let d of list) {
-            const isOwn = (d.username === currentUser);
-            const div = document.createElement("div");
-            div.className = "diary-item";
-            div.innerHTML = `
+
+        // 为每个日记构建回复映射
+        for (let diary of list) {
+            const diaryReplies = allReplies.filter(r => r.diary_id === diary.id);
+            // 按时间排序
+            diaryReplies.sort((a,b) => new Date(a.created_at) - new Date(b.created_at));
+            const repliesMap = new Map();
+            diaryReplies.forEach(r => repliesMap.set(r.id, r));
+
+            const isOwnDiary = (diary.username === currentUser);
+            const diaryDiv = document.createElement("div");
+            diaryDiv.className = "diary-item";
+            diaryDiv.innerHTML = `
                 <div class="diary-header">
-                    <span class="diary-username"><i class="fas fa-user-pen"></i> ${escapeHtml(d.username)}</span>
+                    <span class="diary-username"><i class="fas fa-user-pen"></i> ${escapeHtml(diary.username)}</span>
                 </div>
-                <div class="diary-title">📘 ${escapeHtml(d.title)}</div>
-                <div class="diary-date"><i class="far fa-calendar-alt"></i> ${d.date_str}</div>
-                <div class="diary-content">${escapeHtml(d.content)}</div>
-                <button class="delete-btn ${isOwn ? 'own' : ''}" data-id="${d.id}" data-username="${escapeHtml(d.username)}">${isOwn ? '🗑️ 删除' : '🔒 无权删除'}</button>
+                <div class="diary-title">📘 ${escapeHtml(diary.title)}</div>
+                <div class="diary-date"><i class="far fa-calendar-alt"></i> ${diary.date_str}</div>
+                <div class="diary-content">${escapeHtml(diary.content)}</div>
+                ${isOwnDiary ? `<button class="delete-diary-btn" data-id="${diary.id}"><i class="fas fa-trash-alt"></i> 删除日记</button>` : ''}
+                <div class="replies-section" id="replies-${diary.id}">
+                    <div class="replies-list"></div>
+                    <div class="reply-form">
+                        <input type="text" class="reply-input" id="reply-input-${diary.id}" placeholder="对日记写回复...">
+                        <button class="reply-btn" data-id="${diary.id}" data-parent="">回复日记</button>
+                    </div>
+                </div>
             `;
-            diaryListDiv.appendChild(div);
-        }
-        // 绑定删除事件
-        document.querySelectorAll(".delete-btn").forEach(btn => {
-            btn.onclick = async function(e) {
-                e.stopPropagation();
-                const id = parseInt(this.getAttribute("data-id"));
-                const diaryUsername = this.getAttribute("data-username");
-                if (diaryUsername !== currentUser) {
-                    alert("只能删除自己的日记哦");
-                    return;
+            diaryListDiv.appendChild(diaryDiv);
+
+            const repliesContainer = diaryDiv.querySelector('.replies-list');
+            if (diaryReplies.length === 0) {
+                repliesContainer.innerHTML = '<div style="font-size:0.7rem; color:#b27a50; padding:4px 0;">暂无回复</div>';
+            } else {
+                repliesContainer.innerHTML = "";
+                // 遍历所有回复，显示引用关系
+                for (let rep of diaryReplies) {
+                    const quote = getReplyQuote(rep, repliesMap);
+                    const isNested = rep.parent_reply_id !== null;
+                    const repDiv = document.createElement("div");
+                    repDiv.className = `reply-item ${isNested ? 'reply-nested' : ''}`;
+                    let quoteHtml = '';
+                    if (quote) {
+                        quoteHtml = `<div class="reply-quote"><i class="fas fa-quote-left"></i> 回复 @${escapeHtml(quote.username)}：${escapeHtml(quote.contentPreview)}</div>`;
+                    }
+                    repDiv.innerHTML = `
+                        <div class="reply-header">
+                            <span><i class="fas fa-reply"></i> ${escapeHtml(rep.username)}</span>
+                            <span style="font-size:0.6rem;">${new Date(rep.created_at).toLocaleString()}</span>
+                        </div>
+                        ${quoteHtml}
+                        <div class="reply-content">${escapeHtml(rep.content)}</div>
+                        <div class="reply-actions">
+                            <button class="reply-action-btn" data-id="${rep.id}" data-diary="${diary.id}" data-username="${escapeHtml(rep.username)}" data-content="${escapeHtml(rep.content)}"><i class="fas fa-comment-dots"></i> 回复</button>
+                        </div>
+                    `;
+                    repliesContainer.appendChild(repDiv);
                 }
-                if (confirm("确定删除这篇日记吗？")) {
-                    const ok = await deleteDiary(id, diaryUsername);
-                    if (ok) await refreshDiaries();
+            }
+
+            // 绑定对日记的回复按钮
+            const diaryReplyBtn = diaryDiv.querySelector('.reply-btn[data-parent=""]');
+            const diaryReplyInput = diaryDiv.querySelector('.reply-input');
+            diaryReplyBtn.onclick = async () => {
+                const content = diaryReplyInput.value.trim();
+                if (!content) { alert("请输入回复内容"); return; }
+                const ok = await addReply(diary.id, content, null);
+                if (ok) {
+                    diaryReplyInput.value = "";
+                    await refreshAllData();
+                }
+            };
+
+            // 绑定对回复的回复按钮（动态生成的，使用事件委托）
+            const replyActionBtns = diaryDiv.querySelectorAll('.reply-action-btn');
+            for (let btn of replyActionBtns) {
+                btn.onclick = async () => {
+                    const parentReplyId = parseInt(btn.getAttribute("data-id"));
+                    const parentUsername = btn.getAttribute("data-username");
+                    const parentContent = btn.getAttribute("data-content");
+                    const parentPreview = parentContent.length > 60 ? parentContent.substring(0, 60) + "…" : parentContent;
+                    const replyContent = prompt(`回复 @${parentUsername}：\n“${parentPreview}”\n\n请输入你的回复：`);
+                    if (replyContent && replyContent.trim()) {
+                        const ok = await addReply(diary.id, replyContent.trim(), parentReplyId);
+                        if (ok) await refreshAllData();
+                    } else if (replyContent !== null) {
+                        alert("回复内容不能为空");
+                    }
+                };
+            }
+        }
+
+        // 绑定删除日记事件
+        document.querySelectorAll(".delete-diary-btn").forEach(btn => {
+            btn.onclick = async (e) => {
+                const id = parseInt(btn.getAttribute("data-id"));
+                if (confirm("删除日记会同时删除所有回复，确定吗？")) {
+                    await deleteDiary(id);
+                    await refreshAllData();
                 }
             };
         });
@@ -477,11 +624,6 @@
             if (m === '>') return '&gt;';
             return m;
         });
-    }
-
-    async function refreshDiaries() {
-        allDiaries = await loadDiaries();
-        renderDiaryList();
     }
 
     // ====================== 写日记弹窗 ======================
@@ -501,7 +643,7 @@
         const ok = await addDiary(title, content);
         if (ok) {
             closeModal();
-            await refreshDiaries();
+            await refreshAllData();
         }
     }
 
@@ -517,7 +659,6 @@
         };
     }
 
-    // ====================== 初始化 ======================
     async function init() {
         bindEvents();
         await autoLogin();
