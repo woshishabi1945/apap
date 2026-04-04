@@ -3,177 +3,447 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes, viewport-fit=cover">
-    <title>三人日记本 · 液态玻璃+动画</title>
+    <title>三人日记本 · 极致透明玻璃 + 卷曲动画</title>
     <script src="https://cdn.jsdelivr.net/npm/eruda"></script>
     <script>eruda.init();</script>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,300;14..32,400;14..32,500;14..32,600;14..32,700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <style>
-        * { margin:0; padding:0; box-sizing:border-box; -webkit-tap-highlight-color:transparent; }
-        body { font-family:'Inter',-apple-system,BlinkMacSystemFont,sans-serif; background:#1a1a2e; min-height:100vh; padding:20px 16px; position:relative; overflow-x:hidden; animation:bodyFadeIn 0.5s ease-out; }
-        @keyframes bodyFadeIn { from { opacity:0; } to { opacity:1; } }
-        body::before { content:''; position:fixed; top:-20%; left:-20%; width:140%; height:140%; background:radial-gradient(circle at 30% 40%, rgba(255,180,120,0.25), rgba(200,130,80,0.05), transparent 70%); pointer-events:none; z-index:0; animation:liquidMove 12s ease infinite; }
-        body::after { content:''; position:fixed; bottom:-10%; right:-10%; width:120%; height:120%; background:radial-gradient(circle at 70% 80%, rgba(120,180,220,0.2), rgba(80,130,180,0.05), transparent 70%); pointer-events:none; z-index:0; animation:liquidMove2 15s ease infinite; }
-        @keyframes liquidMove { 0% { transform:translate(0,0) rotate(0deg); opacity:0.6; } 50% { transform:translate(5%,5%) rotate(3deg); opacity:1; } 100% { transform:translate(0,0) rotate(0deg); opacity:0.6; } }
-        @keyframes liquidMove2 { 0% { transform:translate(0,0) scale(1); opacity:0.4; } 50% { transform:translate(-3%,-3%) scale(1.05); opacity:0.7; } 100% { transform:translate(0,0) scale(1); opacity:0.4; } }
-        .container { max-width:800px; margin:0 auto; position:relative; z-index:2; backdrop-filter:blur(20px) saturate(180%); background:rgba(30,30,45,0.35); border-radius:56px; padding:20px 16px; box-shadow:0 8px 32px rgba(0,0,0,0.1), inset 0 1px 0 rgba(255,255,255,0.15); border:1px solid rgba(255,255,255,0.25); animation:containerPop 0.4s cubic-bezier(0.2,0.9,0.4,1.1); }
-        @keyframes containerPop { from { opacity:0; transform:scale(0.98) translateY(20px); } to { opacity:1; transform:scale(1) translateY(0); } }
-        .hero { text-align:center; margin-bottom:24px; animation:heroFade 0.6s ease-out; }
-        @keyframes heroFade { from { opacity:0; transform:translateY(-10px); } to { opacity:1; transform:translateY(0); } }
-        .hero h1 { font-size:2rem; font-weight:700; background:linear-gradient(135deg,#fff8f0,#ffe0c0,#ffd0a0); background-clip:text; -webkit-background-clip:text; color:transparent; animation:textFloat 3s ease-in-out infinite; }
-        @keyframes textFloat { 0%,100% { transform:translateY(0); } 50% { transform:translateY(-3px); } }
-        .hero p { color:rgba(255,240,220,0.9); font-size:0.8rem; font-weight:500; backdrop-filter:blur(10px); display:inline-block; padding:4px 16px; border-radius:60px; background:rgba(0,0,0,0.2); }
-        .auth-bar { background:rgba(20,20,35,0.45); backdrop-filter:blur(20px); border-radius:80px; padding:8px 18px; margin-bottom:20px; display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:8px; border:1px solid rgba(255,255,245,0.2); animation:slideDown 0.4s ease-out; }
-        @keyframes slideDown { from { opacity:0; transform:translateY(-15px); } to { opacity:1; transform:translateY(0); } }
-        .login-form { display:flex; gap:10px; flex-wrap:wrap; align-items:center; }
-        .login-form input { background:rgba(255,255,250,0.2); backdrop-filter:blur(8px); border:1px solid rgba(255,255,255,0.3); border-radius:60px; padding:8px 16px; font-size:0.85rem; color:white; outline:none; transition:all 0.2s ease; }
-        .login-form input:focus { border-color:rgba(255,200,150,0.8); background:rgba(255,255,250,0.3); transform:scale(1.02); }
-        .login-form button, .logout-btn { background:rgba(200,138,92,0.8); backdrop-filter:blur(4px); border:none; border-radius:60px; padding:8px 20px; color:white; font-weight:600; cursor:pointer; transition:all 0.2s cubic-bezier(0.2,0.9,0.4,1.1); }
-        .login-form button:active, .logout-btn:active { transform:scale(0.94); background:rgba(200,138,92,1); }
-        .welcome { font-weight:600; background:rgba(0,0,0,0.3); padding:6px 16px; border-radius:40px; font-size:0.9rem; color:#ffe6cc; }
-        .search-box { background:rgba(20,20,35,0.45); backdrop-filter:blur(20px); border-radius:60px; display:flex; align-items:center; padding:8px 16px; gap:8px; margin-bottom:24px; border:1px solid rgba(255,255,255,0.2); transition:all 0.2s; animation:slideUp 0.4s ease-out 0.05s both; }
-        @keyframes slideUp { from { opacity:0; transform:translateY(15px); } to { opacity:1; transform:translateY(0); } }
-        .search-box:focus-within { border-color:rgba(255,200,150,0.6); background:rgba(30,30,45,0.6); }
-        .search-box input { background:none; border:none; outline:none; width:100%; font-size:0.9rem; color:white; }
-        .diary-grid { display:grid; grid-template-columns:repeat(2,1fr); gap:16px; margin-bottom:20px; }
-        .diary-card { background:rgba(255,252,245,0.25); backdrop-filter:blur(20px) saturate(180%); border-radius:32px; padding:16px; box-shadow:0 8px 20px rgba(0,0,0,0.1), inset 0 1px 0 rgba(255,255,255,0.2); border:1px solid rgba(255,255,245,0.3); transition:all 0.3s cubic-bezier(0.2,0.9,0.4,1.1); cursor:pointer; display:flex; flex-direction:column; color:#fff2e6; animation:cardFadeIn 0.4s cubic-bezier(0.2,0.9,0.4,1.1) backwards; }
-        .diary-card:nth-child(1) { animation-delay:0.02s; } .diary-card:nth-child(2) { animation-delay:0.06s; } .diary-card:nth-child(3) { animation-delay:0.10s; } .diary-card:nth-child(4) { animation-delay:0.14s; } .diary-card:nth-child(5) { animation-delay:0.18s; } .diary-card:nth-child(6) { animation-delay:0.22s; }
-        @keyframes cardFadeIn { from { opacity:0; transform:translateY(20px); } to { opacity:1; transform:translateY(0); } }
-        .diary-card:hover { transform:translateY(-4px); background:rgba(255,252,245,0.35); box-shadow:0 20px 30px -12px rgba(0,0,0,0.2); border-color:rgba(255,230,190,0.6); }
-        .diary-card:active { transform:scale(0.98); transition:0.05s; }
-        .diary-username { font-size:0.7rem; font-weight:600; color:#ffdfb3; background:rgba(0,0,0,0.3); backdrop-filter:blur(4px); display:inline-block; padding:4px 12px; border-radius:60px; margin-bottom:10px; align-self:flex-start; }
-        .diary-title { font-weight:700; font-size:1.1rem; color:#ffffff; margin:6px 0 4px; display:-webkit-box; -webkit-line-clamp:2; -webkit-box-orient:vertical; overflow:hidden; }
-        .diary-date { font-size:0.6rem; color:#ffdcb0; margin-bottom:8px; opacity:0.8; }
-        .diary-content { font-size:0.78rem; color:#ffefdd; line-height:1.4; display:-webkit-box; -webkit-line-clamp:3; -webkit-box-orient:vertical; overflow:hidden; margin-bottom:12px; }
-        .diary-stats { display:flex; justify-content:space-between; align-items:center; margin-top:auto; font-size:0.7rem; }
-        .like-btn { background:rgba(0,0,0,0.2); border:none; color:#ffdbb5; cursor:pointer; font-size:0.75rem; display:flex; align-items:center; gap:5px; padding:4px 10px; border-radius:40px; transition:all 0.15s cubic-bezier(0.2,0.9,0.4,1.1); }
-        .like-btn:active { transform:scale(0.92); }
-        .like-btn.liked { color:#ff6b6b; }
-        .comment-count { display:flex; align-items:center; gap:5px; font-size:0.7rem; background:rgba(0,0,0,0.2); padding:4px 10px; border-radius:40px; }
-        .diary-actions { display:flex; gap:8px; }
-        .action-icon { background:rgba(0,0,0,0.2); border:none; color:#ffddb0; cursor:pointer; font-size:0.7rem; padding:5px 10px; border-radius:30px; transition:all 0.15s; }
-        .action-icon:active { background:rgba(0,0,0,0.4); transform:scale(0.92); }
-        .add-btn { background:rgba(200,138,92,0.8); backdrop-filter:blur(20px); border:none; border-radius:60px; padding:14px; color:white; font-weight:700; width:100%; cursor:pointer; font-size:1rem; transition:all 0.2s ease; animation:fadeUp 0.4s ease-out 0.2s both; }
-        @keyframes fadeUp { from { opacity:0; transform:translateY(20px); } to { opacity:1; transform:translateY(0); } }
-        .add-btn:active { transform:scale(0.97); }
-        .modal { display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.4); backdrop-filter:blur(30px); z-index:10000; align-items:center; justify-content:center; }
-        .modal-content { background:rgba(30,30,45,0.65); backdrop-filter:blur(30px) saturate(180%); width:90%; max-width:500px; max-height:80vh; border-radius:48px; padding:24px; overflow-y:auto; border:1px solid rgba(255,255,255,0.3); box-shadow:0 30px 50px -20px rgba(0,0,0,0.5); color:#fff0e0; animation:modalPopIn 0.3s cubic-bezier(0.2,0.9,0.4,1.1) forwards; }
-        @keyframes modalPopIn { from { opacity:0; transform:scale(0.92) translateY(20px); } to { opacity:1; transform:scale(1) translateY(0); } }
-        .modal-content.closing { animation:modalPopOut 0.25s cubic-bezier(0.4,0,0.2,1) forwards !important; }
-        @keyframes modalPopOut { from { opacity:1; transform:scale(1) translateY(0); } to { opacity:0; transform:scale(0.92) translateY(15px); } }
-        .modal.fade-out { animation:modalFadeOut 0.25s ease forwards; }
-        @keyframes modalFadeOut { from { backdrop-filter:blur(30px); background:rgba(0,0,0,0.4); } to { backdrop-filter:blur(0px); background:rgba(0,0,0,0); } }
-        .modal-reply-item { background:rgba(255,245,235,0.15); backdrop-filter:blur(8px); border-radius:24px; padding:10px 14px; margin-bottom:10px; border:1px solid rgba(255,255,240,0.2); animation:replyItemFade 0.2s ease-out; }
-        @keyframes replyItemFade { from { opacity:0; transform:translateX(-10px); } to { opacity:1; transform:translateX(0); } }
-        .reply-header { display:flex; justify-content:space-between; font-size:0.7rem; color:#ffdbb5; margin-bottom:6px; }
-        .reply-actions { display:flex; gap:10px; margin-top:8px; justify-content:flex-end; }
-        .reply-form { display:flex; gap:10px; margin-top:16px; animation:slideInReply 0.2s ease-out; }
-        @keyframes slideInReply { from { opacity:0; transform:translateY(10px); } to { opacity:1; transform:translateY(0); } }
-        .reply-input { flex:1; background:rgba(255,255,245,0.2); border:1px solid rgba(255,255,240,0.4); border-radius:60px; padding:10px 16px; font-size:0.85rem; outline:none; color:white; transition:all 0.2s; }
-        .reply-input:focus { border-color:#ffcc99; background:rgba(255,255,245,0.3); transform:scale(1.01); }
-        .reply-submit { background:#d9aa82; border:none; padding:0 20px; border-radius:60px; color:white; font-weight:600; cursor:pointer; transition:all 0.15s; }
-        .reply-submit:active { transform:scale(0.94); }
-        .close-modal { background:rgba(0,0,0,0.3); border:1px solid rgba(255,255,240,0.3); padding:8px 24px; border-radius:60px; margin-top:16px; cursor:pointer; font-weight:500; color:white; transition:all 0.15s; }
-        .close-modal:active { transform:scale(0.96); }
-        /* 认识时间计数器样式 */
-        .since-time {
-            text-align: center;
-            font-size: 0.65rem;
-            color: rgba(255, 240, 210, 0.5);
-            margin-top: 16px;
-            padding-top: 8px;
-            border-top: 1px solid rgba(255,255,240,0.2);
-            letter-spacing: 0.5px;
+        :root {
+            --glass-alpha: 0.08;
+            --glass-blur: 40px;
+            --ios-spring: cubic-bezier(0.4, 0, 0.2, 1.4);
+            --accent-glow: #FF6A00;
+            --text-primary: #FFFFFF;
+            --text-secondary: rgba(255, 255, 255, 0.7);
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+
+        body {
+            font-family: -apple-system, "SF Pro Display", "PingFang SC", sans-serif;
+            background: #07070C;
+            min-height: 100vh;
+            padding: 24px 12px 120px 12px;
+            overflow-x: hidden; 
+            overflow-y: auto;
+            color: var(--text-primary);
+        }
+
+        body::before {
+            content: '';
+            position: fixed;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background-image: var(--bg-image, radial-gradient(circle at 10% 20%, rgba(255,106,0,0.25), rgba(13,13,24,0.1) 60%),
+                                                radial-gradient(circle at 90% 80%, rgba(0,162,255,0.2), transparent 50%));
+            background-size: cover; background-position: center;
+            filter: blur(var(--bg-blur, 0px));
+            pointer-events: none; z-index: -1;
+            transition: filter 0.5s var(--ios-spring);
+        }
+
+        .container {
+            max-width: 500px; margin: 0 auto;
+            backdrop-filter: blur(var(--glass-blur)) saturate(220%) brightness(1.1);
+            -webkit-backdrop-filter: blur(var(--glass-blur)) saturate(220%) brightness(1.1);
+            background: rgba(255, 255, 255, calc(var(--glass-alpha) * 0.8));
+            border-radius: 32px; padding: 20px 0px;
+            box-shadow: 0 30px 60px rgba(0,0,0,0.2), inset 0 1px 2px rgba(255,255,255,0.3);
+            border: 0.5px solid rgba(255,255,255,0.25);
+            animation: containerEnter 0.6s var(--ios-spring);
+        }
+        @keyframes containerEnter { from { opacity: 0; transform: scale(0.96) translateY(20px); } to { opacity: 1; transform: scale(1) translateY(0); } }
+
+        .hero { text-align: center; margin-bottom: 20px; padding: 0 16px; }
+        .hero h1 { font-size: 1.8rem; font-weight: 800; letter-spacing: -0.04em; background: linear-gradient(180deg, #FFFFFF 0%, rgba(255,255,255,0.6) 100%); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
+        .hero p { color: rgba(255, 255, 255, 0.4); font-size: 0.75rem; font-weight: 600; letter-spacing: 0.1em; text-transform: uppercase; margin-top: 4px; }
+
+        .auth-bar { background: rgba(255, 255, 255, 0.12); backdrop-filter: blur(12px); border-radius: 16px; padding: 10px; margin: 0 16px 20px 16px; display: flex; justify-content: space-between; align-items: center; border: 0.5px solid rgba(255,255,255,0.2); }
+        .login-form input { background: rgba(255,255,255,0.15); border: 0.5px solid rgba(255,255,255,0.25); border-radius: 10px; padding: 8px 12px; font-size: 0.8rem; color: white; width: 85px; outline: none; }
+        .login-form button, .logout-btn { background: rgba(255,255,255,0.2); backdrop-filter: blur(4px); border: 0.5px solid rgba(255,255,255,0.3); border-radius: 10px; padding: 8px 14px; color: white; font-weight: 700; font-size: 0.8rem; cursor: pointer; transition: all 0.2s; }
+        .login-form button:active, .logout-btn:active { transform: scale(0.96); }
+
+        .slider-wrapper { width: 100%; overflow: hidden; }
+        .view-slider { display: flex; width: 200%; transition: transform 0.6s var(--ios-spring); }
+        .view-page { width: 50%; padding: 0 16px; flex-shrink: 0; }
+
+        .search-box { background: rgba(255, 255, 255, 0.12); backdrop-filter: blur(12px); border-radius: 14px; display: flex; align-items: center; padding: 10px 14px; gap: 10px; margin-bottom: 16px; border: 0.5px solid rgba(255,255,255,0.2); }
+        .search-box input { background: none; border: none; outline: none; width: 100%; font-size: 0.9rem; color: white; }
+
+        .diary-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 10px; margin-bottom: 20px; }
+        .diary-card {
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(20px) saturate(160%);
+            border-radius: 18px; padding: 12px;
+            box-shadow: 0 10px 20px rgba(0,0,0,0.15), inset 0 1px 1px rgba(255,255,255,0.1);
+            border: 0.5px solid rgba(255,255,255,0.2);
+            transition: all 0.3s var(--ios-spring);
+            cursor: pointer; display: flex; flex-direction: column;
+            color: #FFFFFF;
+        }
+        .diary-card:active { transform: scale(0.96); }
+
+        .diary-username { font-size: 0.6rem; font-weight: 700; background: var(--accent-glow); display: inline-block; padding: 3px 6px; border-radius: 6px; margin-bottom: 6px; align-self: flex-start; }
+        .diary-title { font-weight: 700; font-size: 0.95rem; margin-bottom: 2px; }
+        .diary-date { font-size: 0.55rem; color: var(--text-secondary); margin-bottom: 6px; }
+        .diary-content { font-size: 0.7rem; color: rgba(255,255,255,0.8); line-height: 1.4; display: -webkit-box; -webkit-line-clamp: 3; -webkit-box-orient: vertical; overflow: hidden; margin-bottom: 8px; }
+
+        .like-btn, .comment-count, .action-icon { background: rgba(255,255,255,0.12); border: none; color: #FFFFFF; cursor: pointer; font-size: 0.65rem; display: flex; align-items: center; gap: 4px; padding: 4px 8px; border-radius: 8px; transition: all 0.2s; }
+        .like-btn:active, .action-icon:active { transform: scale(0.92); }
+        .like-btn.liked { background: #FF3B30; }
+
+        .fab {
+            position: fixed; bottom: 100px; right: 20px;
+            width: 54px; height: 54px; border-radius: 27px;
+            background: rgba(255, 255, 255, 0.15);
+            backdrop-filter: blur(20px) saturate(180%);
+            border: 1px solid rgba(255, 255, 255, 0.4);
+            color: white; font-size: 20px; cursor: pointer;
+            box-shadow: 0 10px 20px rgba(0,0,0,0.2), inset 0 1px 1px rgba(255,255,255,0.2);
+            display: flex; align-items: center; justify-content: center;
+            z-index: 999; transition: all 0.3s var(--ios-spring);
+        }
+        .fab:active { transform: scale(0.9); }
+
+        .bottom-nav {
+            position: fixed; bottom: 34px; left: 50%; transform: translateX(-50%);
+            width: 280px; background: rgba(15, 15, 20, 0.4); 
+            backdrop-filter: blur(40px) saturate(210%);
+            border-radius: 26px; padding: 5px; display: flex; align-items: center;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.4), inset 0 0.5px 0 rgba(255,255,255,0.1);
+            border: 0.5px solid rgba(255,255,255,0.2);
+            z-index: 1000;
+        }
+        .nav-indicator {
+            position: absolute; left: 5px; width: calc(50% - 5px); height: calc(100% - 10px);
+            background: rgba(255, 255, 255, 0.1); 
+            border: 1.5px solid rgba(255, 255, 255, 0.3);
+            border-radius: 22px; z-index: 1; pointer-events: none;
+            will-change: transform, width;
+        }
+        .nav-btn {
+            flex: 1; padding: 12px; text-align: center; color: rgba(255,255,255,0.5);
+            font-size: 0.85rem; font-weight: 700; border: none; background: none;
+            z-index: 2; transition: color 0.3s;
+        }
+        .nav-btn.active { color: #FFF; text-shadow: 0 0 8px rgba(255,255,255,0.3); }
+
+        .setting-item { margin-bottom: 16px; }
+        .wallpaper-preview { width: 100%; height: 80px; background: rgba(0,0,0,0.2); border-radius: 14px; margin: 8px 0; background-size: cover; background-position: center; border: 0.5px solid rgba(255,255,255,0.15); }
+        .since-time { text-align: center; font-size: 0.65rem; color: rgba(255, 255, 255, 0.4); margin-top: 10px; padding-top: 8px; border-top: 0.5px solid rgba(255,255,255,0.1); }
+
+        /* ====================== 模态框样式 ====================== */
+        .modal {
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(0, 0, 0, 0.2);
+            backdrop-filter: blur(40px);
+            z-index: 10000; display: none;
+            align-items: center; justify-content: center;
+        }
+        .modal-content {
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(50px) saturate(200%);
+            width: 90%; max-width: 450px; max-height: 75vh;
+            border-radius: 32px; padding: 20px;
+            box-shadow: 0 30px 60px rgba(0,0,0,0.3), inset 0 1px 1px rgba(255,255,255,0.15);
+            border: 0.5px solid rgba(255, 255, 255, 0.3);
+            color: #FFFFFF; display: flex; flex-direction: column;
+            animation: modalPopIn 0.3s var(--ios-spring) forwards;
+        }
+        @keyframes modalPopIn {
+            from { opacity: 0; transform: scale(0.95) translateY(15px); }
+            to { opacity: 1; transform: scale(1) translateY(0); }
+        }
+        /* 关闭动画 - 像纸张卷起一样缩放并淡出 */
+        .modal-content.closing {
+            animation: modalFoldOut 0.3s cubic-bezier(0.4, 0, 0.2, 1) forwards;
+        }
+        @keyframes modalFoldOut {
+            0% { opacity: 1; transform: scale(1) rotateX(0deg); }
+            100% { opacity: 0; transform: scale(0.8) rotateX(15deg); }
+        }
+        .modal-scroll-area { flex: 1; overflow-y: auto; margin-bottom: 12px; padding-right: 4px; }
+        .modal-scroll-area::-webkit-scrollbar { width: 3px; }
+        .modal-scroll-area::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.3); border-radius: 2px; }
+
+        #newTitle, #newContent, #modalReplyInput {
+            background: rgba(255, 255, 255, 0.12);
+            backdrop-filter: blur(8px);
+            border: 0.5px solid rgba(255, 255, 255, 0.3);
+            border-radius: 14px;
+            color: white;
+            font-size: 0.9rem;
+            outline: none;
+            padding: 12px;
+        }
+        #newTitle:focus, #newContent:focus, #modalReplyInput:focus {
+            border-color: rgba(255, 106, 0, 0.6);
+            background: rgba(255, 255, 255, 0.2);
+        }
+        #modalReplySubmit, #cancelWriteBtn, #saveWriteBtn, .close-modal-btn {
+            background: rgba(255, 255, 255, 0.12);
+            backdrop-filter: blur(8px);
+            border: 0.5px solid rgba(255, 255, 255, 0.3);
+            border-radius: 14px;
+            color: white;
+            font-weight: 600;
+            cursor: pointer;
             transition: all 0.2s;
         }
-        .since-time:hover {
-            color: rgba(255, 240, 210, 0.9);
+        #modalReplySubmit:active, #cancelWriteBtn:active, #saveWriteBtn:active {
+            transform: scale(0.96);
         }
-        footer {
-            text-align: center;
-            font-size: 0.65rem;
-            color: rgba(255,240,210,0.6);
-            margin-top: 12px;
+        #saveWriteBtn {
+            background: rgba(255, 106, 0, 0.5);
+            border-color: rgba(255, 255, 255, 0.4);
         }
-        @media (max-width:550px) { .diary-grid { gap:12px; } }
+
+        .reply-item {
+            background: rgba(255, 255, 255, 0.08);
+            backdrop-filter: blur(8px);
+            border-radius: 14px;
+            padding: 10px;
+            margin-bottom: 8px;
+            border: 0.5px solid rgba(255, 255, 255, 0.2);
+        }
+        .reply-nested {
+            margin-left: 20px;
+            border-left: 2px solid rgba(255, 106, 0, 0.5);
+        }
+        .reply-quote {
+            background: rgba(0, 0, 0, 0.2);
+            border-radius: 10px;
+            padding: 6px 8px;
+            margin-bottom: 6px;
+            font-size: 0.7rem;
+            color: rgba(255,255,200,0.9);
+        }
     </style>
 </head>
 <body>
+
 <div class="container">
     <div class="hero">
-        <h1><i class="fas fa-water"></i> 三人日记本 <i class="fas fa-droplet"></i></h1>
-        <p>液态玻璃 · 流动的诗</p>
+        <h1>三人日记本</h1>
+        <p>极致通透 · 液态玻璃 · 卷曲动画</p>
     </div>
+
     <div id="authArea" class="auth-bar"></div>
-    <div class="search-box">
-        <i class="fas fa-search"></i>
-        <input type="text" id="searchInput" placeholder="搜索日记...">
+
+    <div class="slider-wrapper">
+        <div class="view-slider" id="viewSlider">
+            <div class="view-page" id="diaryPage">
+                <div class="search-box">
+                    <i class="fas fa-search" style="color: var(--text-secondary);"></i>
+                    <input type="text" id="searchInput" placeholder="搜索记忆碎片...">
+                </div>
+                <div id="diaryGrid" class="diary-grid"></div>
+                <div id="sinceTime" class="since-time">✨ 正在连接时光... ✨</div>
+            </div>
+
+            <div class="view-page" id="settingsPage">
+                <h3 style="color: #FFFFFF; margin-bottom: 14px; font-size: 1.1rem;"><i class="fas fa-sliders-h"></i> 界面调节</h3>
+                <div class="setting-item">
+                    <label style="display: block; color: var(--text-secondary); font-size: 0.8rem; margin-bottom: 6px;">玻璃基础透明度</label>
+                    <input type="range" id="glassAlphaSlider" min="0.05" max="0.7" step="0.01" value="0.08" style="width:100%;">
+                    <span id="glassAlphaValue" style="color: var(--accent-glow); font-size: 0.75rem;">0.08</span>
+                </div>
+                <div class="setting-item">
+                    <label style="display: block; color: var(--text-secondary); font-size: 0.8rem; margin-bottom: 6px;">背景流动模糊度</label>
+                    <input type="range" id="blurSlider" min="0" max="20" step="1" value="0" style="width:100%;">
+                    <span id="blurValue" style="color: var(--accent-glow); font-size: 0.75rem;">0px</span>
+                </div>
+                <div class="setting-item">
+                    <label style="display: block; color: var(--text-secondary); font-size: 0.8rem; margin-bottom: 6px;">自定义记忆背景</label>
+                    <div id="wallpaperPreview" class="wallpaper-preview"></div>
+                    <input type="file" id="wallpaperInput" accept="image/*" style="display: none;">
+                    <button id="chooseWallpaperBtn" style="background:rgba(255,255,255,0.12); backdrop-filter:blur(4px); border:0.5px solid rgba(255,255,255,0.2); border-radius:10px; padding:8px 14px; color:white; font-size:0.75rem; cursor:pointer;"><i class="fas fa-image"></i> 选取图库</button>
+                    <button id="resetWallpaperBtn" style="background:rgba(255,255,255,0.08); border:0.5px solid rgba(255,255,255,0.15); border-radius:10px; padding:8px 14px; color:white; font-size:0.75rem; cursor:pointer; margin-left:8px;"><i class="fas fa-undo-alt"></i> 恢复</button>
+                </div>
+            </div>
+        </div>
     </div>
-    <div id="diaryGrid" class="diary-grid"></div>
-    <button id="addBtn" class="add-btn" style="display: none;"><i class="fas fa-plus-circle"></i> 写日记</button>
-    
-    <!-- 认识时间计数器 -->
-    <div id="sinceTime" class="since-time">✨ 加载中... ✨</div>
-    
-    <footer>☁️ 云端同步 · 点击卡片展开详情</footer>
+</div>
+
+<button id="fabBtn" class="fab" style="display: none;"><i class="fas fa-plus"></i></button>
+
+<div class="bottom-nav" id="bottomDock">
+    <div class="nav-indicator" id="navIndicator"></div>
+    <button id="navDiary" class="nav-btn active">日记</button>
+    <button id="navSettings" class="nav-btn">设置</button>
 </div>
 
 <div id="detailModal" class="modal">
-    <div class="modal-content" id="modalContent"></div>
+    <div class="modal-content">
+        <div class="modal-scroll-area" id="modalScrollArea">
+            <div id="modalContent"></div>
+        </div>
+        <div style="text-align:right; border-top:1px solid rgba(255,255,255,0.15); padding-top:10px;">
+            <button id="closeModalBtn" style="background:rgba(255,255,255,0.12); backdrop-filter:blur(8px); border:0.5px solid rgba(255,255,255,0.25); border-radius:14px; padding:8px 18px; cursor:pointer; color:white; font-weight:700; font-size:0.8rem;">收起</button>
+        </div>
+    </div>
 </div>
 
 <div id="writeModal" class="modal">
     <div class="modal-content">
-        <h3><i class="fas fa-pen-fancy"></i> 新日记</h3>
-        <input type="text" id="newTitle" placeholder="标题" style="width:100%; margin:10px 0; padding:12px; border-radius:60px; border:1px solid rgba(255,255,240,0.4); background: rgba(255,255,245,0.2); color:white;">
-        <textarea id="newContent" rows="4" placeholder="写下你的心情..." style="width:100%; margin:10px 0; padding:12px; border-radius:28px; border:1px solid rgba(255,255,240,0.4); background: rgba(255,255,245,0.2); color:white;"></textarea>
-        <div class="modal-buttons" style="display: flex; gap: 12px; justify-content: flex-end; margin-top: 16px;">
-            <button id="cancelWriteBtn" class="btn-cancel" style="background:rgba(0,0,0,0.4); border:none; padding:8px 20px; border-radius:60px; color:white;">取消</button>
-            <button id="saveWriteBtn" class="btn-save" style="background:#c88a5c; border:none; padding:8px 20px; border-radius:60px; color:white;">保存</button>
+        <h3 style="font-size:1.1rem; margin-bottom:12px;"><i class="fas fa-pen-fancy"></i> 谱写新篇章</h3>
+        <input type="text" id="newTitle" placeholder="标题" style="width:100%; margin-bottom:12px;">
+        <textarea id="newContent" rows="5" placeholder="此刻在想些什么..." style="width:100%; margin-bottom:12px; resize:none;"></textarea>
+        <div style="display: flex; gap: 10px; justify-content: flex-end;">
+            <button id="cancelWriteBtn" style="background:rgba(255,255,255,0.12); backdrop-filter:blur(8px); border:0.5px solid rgba(255,255,255,0.25); border-radius:14px; padding:8px 16px; color:white; cursor:pointer; font-size:0.8rem;">取消</button>
+            <button id="saveWriteBtn" style="background:rgba(255,106,0,0.5); backdrop-filter:blur(8px); border:0.5px solid rgba(255,255,255,0.3); border-radius:14px; padding:8px 16px; color:white; font-weight:700; cursor:pointer; font-size:0.8rem;">保存</button>
         </div>
     </div>
 </div>
 
 <script>
-    // ====================== 认识时间计数器 ======================
-    function updateSinceTime() {
-        const startDate = new Date(2026, 0, 16, 22, 13); // 2026年1月16日22:13（月份从0开始）
-        const now = new Date();
-        const diffMs = now - startDate;
-        if (diffMs < 0) {
-            document.getElementById('sinceTime').innerHTML = `✨ 时光未至 ✨`;
+    // ====================== 通用模态框关闭动画 ======================
+    function closeModalWithAnimation(modalElement) {
+        if (!modalElement) return;
+        const content = modalElement.querySelector('.modal-content');
+        if (!content) {
+            modalElement.style.display = 'none';
             return;
         }
+        content.classList.add('closing');
+        const onAnimationEnd = () => {
+            modalElement.style.display = 'none';
+            content.classList.remove('closing');
+            content.removeEventListener('animationend', onAnimationEnd);
+        };
+        content.addEventListener('animationend', onAnimationEnd, { once: true });
+    }
+
+    // ====================== 时间计数器 ======================
+    function updateSinceTime() {
+        const startDate = new Date(2026, 0, 16, 22, 13);
+        const now = new Date();
+        const diffMs = now - startDate;
+        if (diffMs < 0) { document.getElementById('sinceTime').innerHTML = `✨ 时光未至 ✨`; return; }
         const totalSeconds = Math.floor(diffMs / 1000);
         const days = Math.floor(totalSeconds / 86400);
         const hours = Math.floor((totalSeconds % 86400) / 3600);
         const minutes = Math.floor((totalSeconds % 3600) / 60);
-        document.getElementById('sinceTime').innerHTML = `✨ 已相识 ${days}天 ${hours}小时 ${minutes}分钟 ✨`;
+        document.getElementById('sinceTime').innerHTML = `✨ 飞船已航行 ${days}天 ${hours}小时 ${minutes}分钟 ✨`;
     }
-    // 每秒更新
-    setInterval(updateSinceTime, 1000);
-    updateSinceTime();
+    setInterval(updateSinceTime, 1000); updateSinceTime();
     
-    // ====================== Supabase 配置 ======================
+    // ====================== 外观设置 ======================
+    function loadSettings() {
+        const savedAlpha = localStorage.getItem('glass_alpha');
+        if (savedAlpha !== null) {
+            const alpha = parseFloat(savedAlpha);
+            document.documentElement.style.setProperty('--glass-alpha', alpha);
+            document.getElementById('glassAlphaSlider').value = alpha;
+            document.getElementById('glassAlphaValue').innerText = alpha.toFixed(2);
+        }
+        const savedBlur = localStorage.getItem('bg_blur');
+        if (savedBlur !== null) {
+            const blur = parseInt(savedBlur);
+            document.documentElement.style.setProperty('--bg-blur', blur + 'px');
+            document.getElementById('blurSlider').value = blur;
+            document.getElementById('blurValue').innerText = blur + 'px';
+        }
+        const savedWallpaper = localStorage.getItem('bg_wallpaper');
+        if (savedWallpaper) {
+            document.documentElement.style.setProperty('--bg-image', `url(${savedWallpaper})`);
+            document.getElementById('wallpaperPreview').style.backgroundImage = `url(${savedWallpaper})`;
+        }
+    }
+    document.getElementById('glassAlphaSlider').addEventListener('input', (e) => {
+        const val = parseFloat(e.target.value); document.documentElement.style.setProperty('--glass-alpha', val);
+        document.getElementById('glassAlphaValue').innerText = val.toFixed(2); localStorage.setItem('glass_alpha', val);
+    });
+    document.getElementById('blurSlider').addEventListener('input', (e) => {
+        const val = e.target.value; document.documentElement.style.setProperty('--bg-blur', val + 'px');
+        document.getElementById('blurValue').innerText = val + 'px'; localStorage.setItem('bg_blur', val);
+    });
+    const wallpaperInput = document.getElementById('wallpaperInput');
+    document.getElementById('chooseWallpaperBtn').addEventListener('click', () => wallpaperInput.click());
+    wallpaperInput.addEventListener('change', (e) => {
+        const file = e.target.files[0];
+        if (file && file.type.startsWith('image/')) {
+            const reader = new FileReader();
+            reader.onload = function(ev) {
+                const dataUrl = ev.target.result; localStorage.setItem('bg_wallpaper', dataUrl);
+                document.documentElement.style.setProperty('--bg-image', `url(${dataUrl})`);
+                document.getElementById('wallpaperPreview').style.backgroundImage = `url(${dataUrl})`;
+            }; reader.readAsDataURL(file);
+        }
+    });
+    document.getElementById('resetWallpaperBtn').addEventListener('click', () => {
+        localStorage.removeItem('bg_wallpaper');
+        document.documentElement.style.setProperty('--bg-image', 'radial-gradient(circle at 10% 20%, rgba(255,106,0,0.25), rgba(13,13,24,0.1) 60%), radial-gradient(circle at 90% 80%, rgba(0,162,255,0.2), transparent 50%)');
+        document.getElementById('wallpaperPreview').style.backgroundImage = 'none';
+    });
+    
+    // ====================== 液态DOCK交互 ======================
+    const bottomDock = document.getElementById('bottomDock');
+    const navIndicator = document.getElementById('navIndicator');
+    const viewSlider = document.getElementById('viewSlider');
+    const navDiary = document.getElementById('navDiary');
+    const navSettings = document.getElementById('navSettings');
+    const fab = document.getElementById('fabBtn');
+
+    let startX = 0, currentX = 0, isDragging = false, lastX = 0, velocity = 0;
+    const maxMove = 135;
+
+    function updateLiquid(x) {
+        const progress = x / maxMove;
+        const speed = Math.min(Math.abs(velocity) * 0.06, 0.5);
+        const scaleX = 1 + speed;
+        const scaleY = 1 - speed * 0.4;
+        const skew = velocity * 0.15;
+        navIndicator.style.transform = `translateX(${x}px) scale(${scaleX}, ${scaleY}) skewX(${skew}deg)`;
+        viewSlider.style.transform = `translateX(${progress * -50}%)`;
+    }
+
+    function snap(idx) {
+        const targetX = idx * maxMove;
+        currentX = targetX;
+        navIndicator.style.transition = 'all 0.6s var(--ios-spring)';
+        viewSlider.style.transition = 'transform 0.6s var(--ios-spring)';
+        navIndicator.style.transform = `translateX(${targetX}px) scale(1, 1) skewX(0deg)`;
+        viewSlider.style.transform = `translateX(${idx * -50}%)`;
+        navDiary.classList.toggle('active', idx === 0);
+        navSettings.classList.toggle('active', idx === 1);
+        if (idx === 0 && currentUser) fab.style.display = 'flex';
+        else fab.style.display = 'none';
+    }
+
+    bottomDock.addEventListener('touchstart', (e) => {
+        isDragging = true;
+        startX = e.touches[0].clientX - currentX;
+        navIndicator.style.transition = 'none';
+        viewSlider.style.transition = 'none';
+    });
+    bottomDock.addEventListener('touchmove', (e) => {
+        if (!isDragging) return;
+        const x = e.touches[0].clientX - startX;
+        if (x >= 0 && x <= maxMove) {
+            velocity = x - lastX;
+            currentX = x;
+            lastX = x;
+            updateLiquid(x);
+        }
+    });
+    bottomDock.addEventListener('touchend', () => {
+        isDragging = false;
+        snap(currentX > maxMove / 2 ? 1 : 0);
+    });
+    navDiary.addEventListener('click', () => snap(0));
+    navSettings.addEventListener('click', () => snap(1));
+
+    // ====================== Supabase 业务逻辑 ======================
     const SUPABASE_URL = "https://jjrwfiamjwryxkfpbopy.supabase.co";
     const SUPABASE_ANON_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImpqcndmaWFtandyeXhrZnBib3B5Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzUxNjI1NjIsImV4cCI6MjA5MDczODU2Mn0.OUOGJp6JBjsHHelx9lbh_bE2rYeUh5QG0BuOtVN8cew";
     const sbClient = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 
-    const usersDB = [
-        { username: "苹果", password: "34679134" },
-        { username: "周灿", password: "345187213" },
-        { username: "甜心", password: "243157318" }
-    ];
-
-    let currentUser = null;
-    let allDiaries = [];
-    let allReplies = [];
-    let searchKeyword = "";
+    const usersDB = [ { username: "苹果", password: "34679134" }, { username: "周灿", password: "345187213" }, { username: "甜心", password: "243157318" } ];
+    let currentUser = null; let allDiaries = []; let allReplies = []; let searchKeyword = "";
 
     const authArea = document.getElementById("authArea");
     const diaryGrid = document.getElementById("diaryGrid");
-    const addBtn = document.getElementById("addBtn");
     const searchInput = document.getElementById("searchInput");
     const detailModal = document.getElementById("detailModal");
     const modalContent = document.getElementById("modalContent");
@@ -181,28 +451,19 @@
 
     function saveCredentials(u,p) { localStorage.setItem("saved_username",u); localStorage.setItem("saved_password",p); }
     function clearCredentials() { localStorage.removeItem("saved_username"); localStorage.removeItem("saved_password"); }
-    function getSavedCredentials() {
-        const u = localStorage.getItem("saved_username");
-        const p = localStorage.getItem("saved_password");
-        return (u && p) ? { username: u, password: p } : null;
-    }
+    function getSavedCredentials() { const u = localStorage.getItem("saved_username"); const p = localStorage.getItem("saved_password"); return (u && p) ? { username: u, password: p } : null; }
 
     function renderAuthArea() {
         if (!currentUser) {
             const saved = getSavedCredentials();
-            authArea.innerHTML = `
-                <div class="login-form">
-                    <input type="text" id="loginUsername" placeholder="用户名" value="${saved ? saved.username : ''}">
-                    <input type="password" id="loginPassword" placeholder="密码" value="${saved ? saved.password : ''}">
-                    <button id="doLoginBtn">登录</button>
-                </div>
-            `;
+            authArea.innerHTML = `<div class="login-form"><input type="text" id="loginUsername" placeholder="用户名" value="${saved ? saved.username : ''}"><input type="password" id="loginPassword" placeholder="密码" value="${saved ? saved.password : ''}"><button id="doLoginBtn">登录</button></div>`;
             document.getElementById("doLoginBtn")?.addEventListener("click", doLogin);
-            addBtn.style.display = "none";
+            fab.style.display = "none";
         } else {
-            authArea.innerHTML = `<div class="welcome"><i class="fas fa-user-circle"></i> 欢迎，${currentUser}</div><button id="logoutBtn" class="logout-btn">登出</button>`;
+            authArea.innerHTML = `<div style="font-weight:700; font-size:0.8rem;"><i class="fas fa-user-circle"></i> 欢迎，${currentUser}</div><button id="logoutBtn" class="logout-btn">登出</button>`;
             document.getElementById("logoutBtn")?.addEventListener("click", doLogout);
-            addBtn.style.display = "block";
+            if (viewSlider.style.transform === 'translateX(0%)' || viewSlider.style.transform === '') fab.style.display = 'flex';
+            else fab.style.display = 'none';
         }
     }
 
@@ -210,325 +471,191 @@
         const username = document.getElementById("loginUsername").value.trim();
         const password = document.getElementById("loginPassword").value.trim();
         const user = usersDB.find(u => u.username === username && u.password === password);
-        if (user) {
-            currentUser = user.username;
-            saveCredentials(username, password);
-            renderAuthArea();
-            refreshAllData();
-        } else { alert("用户名或密码错误"); }
+        if (user) { currentUser = user.username; saveCredentials(username, password); renderAuthArea(); refreshAllData(); } else { alert("用户名或密码错误"); }
     }
-    function doLogout() {
-        currentUser = null;
-        clearCredentials();
-        renderAuthArea();
-        allDiaries = []; allReplies = [];
-        renderDiaryGrid();
-        addBtn.style.display = "none";
-    }
-    async function autoLogin() {
-        const saved = getSavedCredentials();
-        if (saved && usersDB.find(u => u.username === saved.username && u.password === saved.password)) {
-            currentUser = saved.username;
-            renderAuthArea();
-            await refreshAllData();
-        } else { renderAuthArea(); }
-    }
+    function doLogout() { currentUser = null; clearCredentials(); renderAuthArea(); allDiaries = []; allReplies = []; renderDiaryGrid(); fab.style.display = "none"; }
+    async function autoLogin() { const saved = getSavedCredentials(); if (saved && usersDB.find(u => u.username === saved.username && u.password === saved.password)) { currentUser = saved.username; renderAuthArea(); await refreshAllData(); } else { renderAuthArea(); } }
 
-    async function loadDiaries() {
-        const { data, error } = await sbClient.from('diaries').select('*').order('created_at', { ascending: false });
-        if (error) { console.error(error); alert("加载日记失败"); return []; }
-        return data || [];
-    }
-    async function loadReplies() {
-        const { data, error } = await sbClient.from('replies').select('*').order('created_at', { ascending: true });
-        if (error) { console.error(error); alert("加载回复失败"); return []; }
-        return data || [];
-    }
+    async function loadDiaries() { const { data, error } = await sbClient.from('diaries').select('*').order('created_at', { ascending: false }); return data || []; }
+    async function loadReplies() { const { data, error } = await sbClient.from('replies').select('*').order('created_at', { ascending: true }); return data || []; }
     
     async function addDiary(title, content) {
-        const now = new Date();
-        const dateStr = `${now.getFullYear()}-${String(now.getMonth()+1).padStart(2,'0')}-${String(now.getDate()).padStart(2,'0')} ${String(now.getHours()).padStart(2,'0')}:${String(now.getMinutes()).padStart(2,'0')}`;
-        const newId = Date.now();
-        const { error } = await sbClient.from('diaries').insert([{
-            id: newId,
-            user_id: 0,
-            username: currentUser,
-            title, content,
-            date_str: dateStr,
-            created_at: now.toISOString(),
-            likes_count: 0, liked_by: []
-        }]);
-        if (error) { alert("保存失败: "+error.message); return false; }
-        return true;
+        const now = new Date(); const dateStr = `${now.getFullYear()}-${String(now.getMonth()+1).padStart(2,'0')}-${String(now.getDate()).padStart(2,'0')} ${String(now.getHours()).padStart(2,'0')}:${String(now.getMinutes()).padStart(2,'0')}`;
+        const { error } = await sbClient.from('diaries').insert([{ id: Date.now(), user_id: 0, username: currentUser, title, content, date_str: dateStr, created_at: now.toISOString(), likes_count: 0, liked_by: [] }]);
+        return !error;
     }
     
-    async function updateDiary(diaryId, newTitle, newContent) {
-        const { error } = await sbClient.from('diaries').update({ title: newTitle, content: newContent }).eq('id', diaryId);
-        if (error) { alert("更新失败: "+error.message); return false; }
-        return true;
-    }
     async function deleteDiary(diaryId) {
         await sbClient.from('replies').delete().eq('diary_id', diaryId);
         const { error } = await sbClient.from('diaries').delete().eq('id', diaryId);
-        if (error) { alert("删除失败: "+error.message); return false; }
+        if (error) { alert("删除失败"); return false; }
         return true;
     }
     
-    async function addReply(diaryId, content, parentReplyId = null) {
-        const now = new Date();
-        const newId = Date.now();
-        const { error } = await sbClient.from('replies').insert([{
-            id: newId,
-            diary_id: diaryId,
-            username: currentUser,
-            content: content,
-            parent_reply_id: parentReplyId,
-            created_at: now.toISOString(),
-            likes_count: 0, liked_by: []
-        }]);
-        if (error) { alert("回复失败: "+error.message); return false; }
-        return true;
-    }
-    
-    async function deleteReply(replyId) {
-        const { error } = await sbClient.from('replies').delete().eq('id', replyId);
-        if (error) { alert("删除回复失败: "+error.message); return false; }
-        return true;
-    }
     async function toggleLike(target, id, type) {
         const table = type === 'diary' ? 'diaries' : 'replies';
         const item = (type === 'diary' ? allDiaries : allReplies).find(i => i.id === id);
         if (!item) return;
         let liked_by = item.liked_by || [];
         let isLiked = liked_by.includes(currentUser);
-        let newLikedBy, newLikesCount;
-        if (isLiked) {
-            newLikedBy = liked_by.filter(u => u !== currentUser);
-            newLikesCount = (item.likes_count || 0) - 1;
-        } else {
-            newLikedBy = [...liked_by, currentUser];
-            newLikesCount = (item.likes_count || 0) + 1;
-        }
-        const { error } = await sbClient.from(table).update({ likes_count: newLikesCount, liked_by: newLikedBy }).eq('id', id);
-        if (error) { alert("点赞失败: "+error.message); return; }
+        let newLikedBy = isLiked ? liked_by.filter(u => u !== currentUser) : [...liked_by, currentUser];
+        let newLikesCount = isLiked ? (item.likes_count || 0) - 1 : (item.likes_count || 0) + 1;
+        await sbClient.from(table).update({ likes_count: newLikesCount, liked_by: newLikedBy }).eq('id', id);
         await refreshAllData();
     }
 
-    async function refreshAllData() {
-        if (!currentUser) return;
-        allDiaries = await loadDiaries();
-        allReplies = await loadReplies();
-        renderDiaryGrid();
+    async function addReply(diaryId, content, parentReplyId = null) {
+        const newId = Date.now();
+        const { error } = await sbClient.from('replies').insert([{
+            id: newId, diary_id: diaryId, username: currentUser, content: content,
+            parent_reply_id: parentReplyId,
+            created_at: new Date().toISOString(), likes_count: 0, liked_by: []
+        }]);
+        return !error;
     }
 
+    async function deleteReply(replyId) {
+        const { error } = await sbClient.from('replies').delete().eq('id', replyId);
+        if (error) { alert("删除回复失败"); return false; }
+        return true;
+    }
+
+    async function refreshAllData() { if (!currentUser) return; allDiaries = await loadDiaries(); allReplies = await loadReplies(); renderDiaryGrid(); }
+
     function renderDiaryGrid() {
-        if (!currentUser) { diaryGrid.innerHTML = `<div style="grid-column:1/-1; text-align:center; color:#ffeedd;">🔐 请先登录</div>`; return; }
+        if (!currentUser) { diaryGrid.innerHTML = `<div style="grid-column:1/-1; text-align:center; color:#ffeedd; font-size:0.8rem;">🔐 请先登录</div>`; return; }
         let list = allDiaries;
-        if (searchKeyword.trim()) {
-            const kw = searchKeyword.trim().toLowerCase();
-            list = list.filter(d => d.title.toLowerCase().includes(kw) || d.content.toLowerCase().includes(kw));
-        }
-        if (list.length === 0) { diaryGrid.innerHTML = `<div style="grid-column:1/-1; text-align:center; padding:40px; color:#ffeedd;">✨ 暂无日记，点击「写日记」开始</div>`; return; }
+        if (searchKeyword.trim()) { const kw = searchKeyword.trim().toLowerCase(); list = list.filter(d => d.title.toLowerCase().includes(kw) || d.content.toLowerCase().includes(kw)); }
+        if (list.length === 0) { diaryGrid.innerHTML = `<div style="grid-column:1/-1; text-align:center; padding:20px; color:#ffeedd; font-size:0.8rem;">✨ 暂无日记</div>`; return; }
         diaryGrid.innerHTML = "";
         for (let diary of list) {
-            const isOwn = diary.username === currentUser;
             const liked = (diary.liked_by || []).includes(currentUser);
+            const isOwn = diary.username === currentUser;
             const replyCount = allReplies.filter(r => r.diary_id === diary.id).length;
-            const card = document.createElement("div");
-            card.className = "diary-card";
+            const card = document.createElement("div"); card.className = "diary-card";
             card.innerHTML = `
                 <div class="diary-username"><i class="fas fa-user-pen"></i> ${escapeHtml(diary.username)}</div>
                 <div class="diary-title">${escapeHtml(diary.title)}</div>
                 <div class="diary-date">${diary.date_str}</div>
                 <div class="diary-content">${escapeHtml(diary.content)}</div>
-                <div class="diary-stats">
-                    <button class="like-btn ${liked ? 'liked' : ''}" data-id="${diary.id}" data-type="diary"><i class="fas fa-heart"></i> ${diary.likes_count || 0}</button>
-                    <div class="comment-count"><i class="fas fa-comment"></i> ${replyCount}</div>
-                    <div class="diary-actions">
-                        ${isOwn ? `<button class="action-icon edit-diary" data-id="${diary.id}" data-title="${escapeHtml(diary.title)}" data-content="${escapeHtml(diary.content)}"><i class="fas fa-edit"></i></button>
-                        <button class="action-icon delete-diary" data-id="${diary.id}"><i class="fas fa-trash-alt"></i></button>` : ''}
+                <div style="display:flex; justify-content:space-between; align-items:center; margin-top:auto;">
+                    <div style="display:flex; gap:6px;">
+                        <button class="like-btn ${liked ? 'liked' : ''}" data-id="${diary.id}"><i class="fas fa-heart"></i> ${diary.likes_count || 0}</button>
+                        <div class="comment-count"><i class="fas fa-comment"></i> ${replyCount}</div>
                     </div>
+                    ${isOwn ? `<button class="action-icon delete-diary" data-id="${diary.id}" style="background:rgba(255,59,48,0.15); color:#FF3B30;"><i class="fas fa-trash-alt"></i></button>` : ''}
                 </div>
             `;
-            card.addEventListener("click", (e) => { if (!e.target.closest('.like-btn') && !e.target.closest('.action-icon')) openDetailModal(diary.id); });
+            card.addEventListener("click", (e) => { if (!e.target.closest('.like-btn') && !e.target.closest('.delete-diary')) openDetailModal(diary.id); });
             diaryGrid.appendChild(card);
         }
-        document.querySelectorAll('.like-btn').forEach(btn => {
-            btn.onclick = async (e) => {
-                e.stopPropagation();
-                const id = parseInt(btn.dataset.id);
-                const type = btn.dataset.type;
-                await toggleLike(type, id, type);
-            };
-        });
-        document.querySelectorAll('.edit-diary').forEach(btn => {
-            btn.onclick = async (e) => {
-                e.stopPropagation();
-                const id = parseInt(btn.dataset.id);
-                const oldTitle = btn.dataset.title;
-                const oldContent = btn.dataset.content;
-                const newTitle = prompt("编辑标题", oldTitle);
-                if (newTitle === null) return;
-                const newContent = prompt("编辑内容", oldContent);
-                if (newContent === null) return;
-                await updateDiary(id, newTitle, newContent);
-                await refreshAllData();
-            };
-        });
-        document.querySelectorAll('.delete-diary').forEach(btn => {
-            btn.onclick = async (e) => {
-                e.stopPropagation();
-                if (confirm("删除日记会删除所有回复，确定吗？")) {
-                    await deleteDiary(parseInt(btn.dataset.id));
-                    await refreshAllData();
-                }
-            };
-        });
+        document.querySelectorAll('.like-btn').forEach(btn => btn.onclick = async (e) => { e.stopPropagation(); await toggleLike('diary', parseInt(btn.dataset.id), 'diary'); });
+        document.querySelectorAll('.delete-diary').forEach(btn => btn.onclick = async (e) => { e.stopPropagation(); if(confirm("确定抹去这段记忆吗？")) { await deleteDiary(parseInt(btn.dataset.id)); await refreshAllData(); } });
     }
 
-    function closeModalWithAnimation(modalElement) {
-        if (!modalElement) return;
-        const content = modalElement.querySelector('.modal-content');
-        if (content) {
-            content.classList.add('closing');
-            const onAnimationEnd = () => {
-                modalElement.style.display = 'none';
-                content.classList.remove('closing');
-                content.removeEventListener('animationend', onAnimationEnd);
-                modalElement.classList.remove('fade-out');
-            };
-            content.addEventListener('animationend', onAnimationEnd, { once: true });
-            modalElement.classList.add('fade-out');
-        } else {
-            modalElement.style.display = 'none';
+    function buildReplyTree(replies, parentId = null) {
+        const children = replies.filter(r => r.parent_reply_id === parentId);
+        if (children.length === 0) return '';
+        let html = '';
+        for (let rep of children) {
+            const liked = (rep.liked_by || []).includes(currentUser);
+            const isOwn = rep.username === currentUser;
+            const quoteHtml = (rep.parent_reply_id) ? `<div class="reply-quote"><i class="fas fa-quote-left"></i> 回复 @${escapeHtml(replies.find(r=>r.id===rep.parent_reply_id)?.username || '?' )}：${escapeHtml(replies.find(r=>r.id===rep.parent_reply_id)?.content?.substring(0,50) || '')}</div>` : '';
+            html += `
+                <div class="reply-item">
+                    <div style="display:flex; justify-content:space-between; font-size:0.65rem; color:var(--text-secondary); margin-bottom:4px;">
+                        <span><i class="fas fa-reply"></i> ${escapeHtml(rep.username)}</span>
+                        <span style="font-size:0.6rem;">${new Date(rep.created_at).toLocaleString()}</span>
+                    </div>
+                    ${quoteHtml}
+                    <div style="font-size:0.75rem; color:rgba(255,255,255,0.9); margin-bottom:6px;">${escapeHtml(rep.content)}</div>
+                    <div style="display:flex; justify-content:space-between; align-items:center;">
+                        <button class="like-reply-btn" data-id="${rep.id}" style="background:none; border:none; color:${liked?'#FF3B30':'rgba(255,255,255,0.6)'}; font-size:0.65rem;"><i class="fas fa-heart"></i> ${rep.likes_count||0}</button>
+                        <div style="display:flex; gap:8px;">
+                            <button class="quote-reply-btn" data-id="${rep.id}" data-username="${escapeHtml(rep.username)}" data-content="${escapeHtml(rep.content)}" style="background:none; border:none; color:#FFA500; font-size:0.65rem;"><i class="fas fa-comment-dots"></i> 回复</button>
+                            ${isOwn ? `<button class="delete-reply-btn" data-id="${rep.id}" style="background:none; border:none; color:#FF3B30; font-size:0.65rem;"><i class="fas fa-trash-alt"></i> 删除</button>` : ''}
+                        </div>
+                    </div>
+                </div>
+                <div style="margin-left: 20px; border-left: 2px solid rgba(255,106,0,0.3); padding-left: 8px;">
+                    ${buildReplyTree(replies, rep.id)}
+                </div>
+            `;
         }
+        return html;
     }
 
     async function openDetailModal(diaryId) {
-        const diary = allDiaries.find(d => d.id === diaryId);
-        if (!diary) return;
-        const diaryReplies = allReplies.filter(r => r.diary_id === diaryId).sort((a,b)=>new Date(a.created_at)-new Date(b.created_at));
-        const repliesMap = new Map(); diaryReplies.forEach(r => repliesMap.set(r.id, r));
-        function getReplyQuote(reply) {
-            if (!reply.parent_reply_id) return null;
-            const parent = repliesMap.get(reply.parent_reply_id);
-            if (!parent) return null;
-            return { username: parent.username, preview: parent.content.length>50?parent.content.slice(0,50)+"…":parent.content };
-        }
-        let repliesHtml = '';
-        for (let rep of diaryReplies) {
-            const quote = getReplyQuote(rep);
-            const isOwnReply = rep.username === currentUser;
-            const liked = (rep.liked_by || []).includes(currentUser);
-            repliesHtml += `
-                <div class="modal-reply-item">
-                    <div class="reply-header">
-                        <span><i class="fas fa-reply"></i> ${escapeHtml(rep.username)}</span>
-                        <span>${new Date(rep.created_at).toLocaleString()}</span>
-                    </div>
-                    ${quote ? `<div style="background:rgba(0,0,0,0.2); border-radius:12px; padding:4px 8px; margin-bottom:6px; font-size:0.7rem;">↳ 回复 @${escapeHtml(quote.username)}：${escapeHtml(quote.preview)}</div>` : ''}
-                    <div>${escapeHtml(rep.content)}</div>
-                    <div class="reply-actions">
-                        <button class="like-reply-btn" data-id="${rep.id}" data-type="reply" style="background:none; border:none; color:${liked?'#ff6b6b':'#ffdbb5'}; font-size:0.7rem;"><i class="fas fa-heart"></i> ${rep.likes_count||0}</button>
-                        ${isOwnReply ? `<button class="delete-reply-btn" data-id="${rep.id}" style="background:none; border:none; color:#ffaa88; font-size:0.7rem;">🗑️ 删除</button>` : ''}
-                        <button class="quote-reply-btn" data-id="${rep.id}" data-username="${escapeHtml(rep.username)}" data-content="${escapeHtml(rep.content)}" style="background:none; border:none; color:#ffcc99; font-size:0.7rem;">💬 回复</button>
-                    </div>
-                </div>
-            `;
-        }
+        const diary = allDiaries.find(d => d.id === diaryId); if (!diary) return;
+        const diaryReplies = allReplies.filter(r => r.diary_id === diaryId);
+        diaryReplies.sort((a,b) => new Date(a.created_at) - new Date(b.created_at));
+        const repliesTreeHtml = buildReplyTree(diaryReplies);
+        
         modalContent.innerHTML = `
             <div style="margin-bottom:12px;">
-                <div class="diary-username" style="display:inline-block;">${escapeHtml(diary.username)}</div>
-                <h3>${escapeHtml(diary.title)}</h3>
-                <div style="font-size:0.7rem; color:#ffdcb0; margin-bottom:8px;">${diary.date_str}</div>
-                <div style="white-space:pre-wrap; margin-bottom:16px;">${escapeHtml(diary.content)}</div>
+                <div class="diary-username">${escapeHtml(diary.username)}</div>
+                <h3 style="margin: 4px 0; font-size:1rem;">${escapeHtml(diary.title)}</h3>
+                <div style="font-size:0.6rem; color:var(--text-secondary); margin-bottom:8px;">${diary.date_str}</div>
+                <div style="white-space:pre-wrap; font-size:0.8rem; line-height:1.5; color:rgba(255,255,255,0.9);">${escapeHtml(diary.content)}</div>
             </div>
-            <div style="border-top:1px solid rgba(255,255,240,0.3); padding-top:12px;">
-                <strong>💬 回复 (${diaryReplies.length})</strong>
-                <div id="modalRepliesList">${repliesHtml || '<div style="padding:12px; text-align:center;">暂无回复</div>'}</div>
-                <div class="reply-form">
-                    <input type="text" id="modalReplyInput" placeholder="写回复..." class="reply-input">
-                    <button id="modalReplySubmit" class="reply-submit">发送</button>
+            <div style="border-top:1px solid rgba(255,255,255,0.15); padding-top:10px;">
+                <strong style="font-size:0.8rem;">💬 共鸣 (${diaryReplies.length})</strong>
+                <div id="repliesTreeContainer" style="margin-top:8px;">${repliesTreeHtml || '<div style="padding:10px; text-align:center; font-size:0.75rem; color:rgba(255,255,255,0.4);">静候第一声共鸣</div>'}</div>
+                <div style="display:flex; gap:8px; margin-top:12px;">
+                    <input type="text" id="modalReplyInput" placeholder="写下你的共鸣..." style="flex:1;">
+                    <button id="modalReplySubmit">发送</button>
                 </div>
-            </div>
-            <div style="text-align:right; margin-top:16px;">
-                <button id="closeModalBtn" class="close-modal">关闭</button>
             </div>
         `;
         detailModal.style.display = "flex";
-        const modalContentElem = detailModal.querySelector('.modal-content');
-        if (modalContentElem) modalContentElem.classList.remove('closing');
-        detailModal.classList.remove('fade-out');
-
+        
         document.getElementById("modalReplySubmit").onclick = async () => {
-            const content = document.getElementById("modalReplyInput").value.trim();
-            if (!content) return;
-            const ok = await addReply(diaryId, content);
-            if (ok) {
+            const content = document.getElementById("modalReplyInput").value.trim(); if (!content) return;
+            if (await addReply(diaryId, content, null)) { await refreshAllData(); openDetailModal(diaryId); }
+        };
+        document.querySelectorAll('.like-reply-btn').forEach(btn => btn.onclick = async (e) => {
+            const id = parseInt(btn.dataset.id);
+            await toggleLike('reply', id, 'reply');
+            openDetailModal(diaryId);
+        });
+        document.querySelectorAll('.delete-reply-btn').forEach(btn => btn.onclick = async (e) => {
+            if (confirm("删除这条回复？")) {
+                await deleteReply(parseInt(btn.dataset.id));
                 await refreshAllData();
                 openDetailModal(diaryId);
             }
-        };
-        document.querySelectorAll('.like-reply-btn').forEach(btn => {
-            btn.onclick = async (e) => {
-                const id = parseInt(btn.dataset.id);
-                await toggleLike('reply', id, 'reply');
-                openDetailModal(diaryId);
-            };
         });
-        document.querySelectorAll('.delete-reply-btn').forEach(btn => {
-            btn.onclick = async (e) => {
-                if (confirm("删除这条回复？")) {
-                    await deleteReply(parseInt(btn.dataset.id));
+        document.querySelectorAll('.quote-reply-btn').forEach(btn => btn.onclick = async () => {
+            const parentId = parseInt(btn.dataset.id);
+            const parentUsername = btn.dataset.username;
+            const parentContent = btn.dataset.content;
+            const preview = parentContent.length>60 ? parentContent.slice(0,60)+"…" : parentContent;
+            const replyText = prompt(`回复 @${parentUsername}：\n“${preview}”\n\n输入你的回复：`);
+            if (replyText && replyText.trim()) {
+                if (await addReply(diaryId, replyText.trim(), parentId)) {
                     await refreshAllData();
                     openDetailModal(diaryId);
                 }
-            };
+            }
         });
-        document.querySelectorAll('.quote-reply-btn').forEach(btn => {
-            btn.onclick = async () => {
-                const parentId = parseInt(btn.dataset.id);
-                const parentUsername = btn.dataset.username;
-                const parentContent = btn.dataset.content;
-                const preview = parentContent.length>60 ? parentContent.slice(0,60)+"…" : parentContent;
-                const replyText = prompt(`回复 @${parentUsername}：\n“${preview}”\n\n输入你的回复：`);
-                if (replyText && replyText.trim()) {
-                    const ok = await addReply(diaryId, replyText.trim(), parentId);
-                    if (ok) {
-                        await refreshAllData();
-                        openDetailModal(diaryId);
-                    }
-                }
-            };
-        });
-        document.getElementById("closeModalBtn").onclick = () => closeModalWithAnimation(detailModal);
-        detailModal.onclick = (e) => { if (e.target === detailModal) closeModalWithAnimation(detailModal); };
     }
 
     function escapeHtml(str) { if(!str) return ""; return str.replace(/[&<>]/g, m => m==='&'?'&amp;':m==='<'?'&lt;':'&gt;'); }
-
-    function openWriteModal() { 
-        writeModal.style.display = "flex"; 
-        const modalContentElem = writeModal.querySelector('.modal-content');
-        if (modalContentElem) modalContentElem.classList.remove('closing');
-        writeModal.classList.remove('fade-out');
-        document.getElementById("newTitle").value = ""; 
-        document.getElementById("newContent").value = ""; 
-    }
+    function openWriteModal() { writeModal.style.display = "flex"; document.getElementById("newTitle").value = ""; document.getElementById("newContent").value = ""; }
     function closeWriteModal() { closeModalWithAnimation(writeModal); }
-    async function saveNewDiary() {
-        const title = document.getElementById("newTitle").value.trim();
-        const content = document.getElementById("newContent").value.trim();
-        if (!title && !content) { alert("请填写标题或内容"); return; }
-        const ok = await addDiary(title || "无题", content || "");
-        if (ok) { closeWriteModal(); await refreshAllData(); }
-    }
-    document.getElementById("addBtn").onclick = openWriteModal;
+    
+    document.getElementById("closeModalBtn").onclick = () => closeModalWithAnimation(detailModal);
+    detailModal.onclick = (e) => { if (e.target === detailModal) closeModalWithAnimation(detailModal); };
+    fab.addEventListener('click', openWriteModal);
     document.getElementById("cancelWriteBtn")?.addEventListener("click", closeWriteModal);
-    document.getElementById("saveWriteBtn")?.addEventListener("click", saveNewDiary);
-    writeModal.onclick = (e) => { if (e.target === writeModal) closeWriteModal(); };
+    document.getElementById("saveWriteBtn")?.addEventListener("click", async () => {
+        const title = document.getElementById("newTitle").value.trim(); const content = document.getElementById("newContent").value.trim();
+        if (await addDiary(title || "无题", content || "")) { closeWriteModal(); await refreshAllData(); }
+    });
     searchInput.oninput = (e) => { searchKeyword = e.target.value; renderDiaryGrid(); };
-    autoLogin();
+    
+    autoLogin(); loadSettings();
+    snap(0);
 </script>
 </body>
 </html>
