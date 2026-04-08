@@ -64,8 +64,8 @@
         .login-form button:active, .logout-btn:active { transform: scale(0.96); }
 
         .slider-wrapper { width: 100%; overflow: hidden; }
-        .view-slider { display: flex; width: 200%; transition: transform 0.6s var(--ios-spring); }
-        .view-page { width: 50%; padding: 0 16px; flex-shrink: 0; }
+        .view-slider { display: flex; width: 300%; transition: transform 0.6s var(--ios-spring); }
+        .view-page { width: 33.333%; padding: 0 16px; flex-shrink: 0; }
 
         .search-box { background: rgba(255, 255, 255, 0.12); backdrop-filter: blur(12px); border-radius: 14px; display: flex; align-items: center; padding: 10px 14px; gap: 10px; margin-bottom: 16px; border: 0.5px solid rgba(255,255,255,0.2); }
         .search-box input { background: none; border: none; outline: none; width: 100%; font-size: 0.9rem; color: white; }
@@ -83,7 +83,17 @@
         }
         .diary-card:active { transform: scale(0.96); }
 
-        .diary-username { font-size: 0.6rem; font-weight: 700; background: var(--accent-glow); display: inline-block; padding: 3px 6px; border-radius: 6px; margin-bottom: 6px; align-self: flex-start; }
+        .diary-header { display: flex; align-items: center; gap: 8px; margin-bottom: 8px; }
+        .diary-avatar {
+            width: 28px; height: 28px; border-radius: 14px;
+            background: rgba(255,255,255,0.2); backdrop-filter: blur(4px);
+            border: 0.5px solid rgba(255,255,255,0.3);
+            overflow: hidden; flex-shrink: 0;
+        }
+        .diary-avatar img { width: 100%; height: 100%; object-fit: cover; display: block; }
+        .diary-avatar .avatar-text { width: 100%; height: 100%; display: flex; align-items: center; justify-content: center; font-size: 0.7rem; font-weight: 700; color: white; }
+        
+        .diary-username { font-size: 0.65rem; font-weight: 700; background: var(--accent-glow); display: inline-block; padding: 3px 8px; border-radius: 12px; }
         .diary-title { font-weight: 700; font-size: 0.95rem; margin-bottom: 2px; }
         .diary-date { font-size: 0.55rem; color: var(--text-secondary); margin-bottom: 6px; }
         .diary-content { font-size: 0.7rem; color: rgba(255,255,255,0.8); line-height: 1.4; display: -webkit-box; -webkit-line-clamp: 3; -webkit-box-orient: vertical; overflow: hidden; margin-bottom: 8px; }
@@ -107,7 +117,7 @@
 
         .bottom-nav {
             position: fixed; bottom: 34px; left: 50%; transform: translateX(-50%);
-            width: 280px; background: rgba(15, 15, 20, 0.4); 
+            width: 300px; background: rgba(15, 15, 20, 0.4); 
             backdrop-filter: blur(40px) saturate(210%);
             border-radius: 26px; padding: 5px; display: flex; align-items: center;
             box-shadow: 0 20px 40px rgba(0,0,0,0.4), inset 0 0.5px 0 rgba(255,255,255,0.1);
@@ -115,7 +125,7 @@
             z-index: 1000;
         }
         .nav-indicator {
-            position: absolute; left: 5px; width: calc(50% - 5px); height: calc(100% - 10px);
+            position: absolute; left: 5px; width: calc(33.333% - 5px); height: calc(100% - 10px);
             background: rgba(255, 255, 255, 0.1); 
             border: 1.5px solid rgba(255, 255, 255, 0.3);
             border-radius: 22px; z-index: 1; pointer-events: none;
@@ -143,7 +153,7 @@
         .modal-content {
             background: rgba(255, 255, 255, 0.1);
             backdrop-filter: blur(50px) saturate(200%);
-            width: 90%; max-width: 450px; max-height: 75vh;
+            width: 90%; max-width: 450px; max-height: 80vh;
             border-radius: 32px; padding: 20px;
             box-shadow: 0 30px 60px rgba(0,0,0,0.3), inset 0 1px 1px rgba(255,255,255,0.15);
             border: 0.5px solid rgba(255, 255, 255, 0.3);
@@ -154,7 +164,6 @@
             from { opacity: 0; transform: scale(0.95) translateY(15px); }
             to { opacity: 1; transform: scale(1) translateY(0); }
         }
-        /* 关闭动画 - 像纸张卷起一样缩放并淡出 */
         .modal-content.closing {
             animation: modalFoldOut 0.3s cubic-bezier(0.4, 0, 0.2, 1) forwards;
         }
@@ -218,6 +227,172 @@
             font-size: 0.7rem;
             color: rgba(255,255,200,0.9);
         }
+        
+        /* 回复者头像样式 */
+        .reply-header {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            margin-bottom: 6px;
+        }
+        .reply-avatar {
+            width: 24px; height: 24px; border-radius: 12px;
+            background: rgba(255,255,255,0.2); backdrop-filter: blur(4px);
+            border: 0.5px solid rgba(255,255,255,0.3);
+            overflow: hidden; flex-shrink: 0;
+        }
+        .reply-avatar img { width: 100%; height: 100%; object-fit: cover; display: block; }
+        .reply-avatar .avatar-text { width: 100%; height: 100%; display: flex; align-items: center; justify-content: center; font-size: 0.6rem; font-weight: 700; color: white; }
+
+        /* ========== 人物介绍卡片样式 ========== */
+        .profile-cards-container {
+            display: flex;
+            flex-direction: column;
+            gap: 18px;
+            padding: 0 8px;
+        }
+
+        .profile-card {
+            background: rgba(255, 255, 255, calc(var(--glass-alpha) * 1.2));
+            backdrop-filter: blur(calc(var(--glass-blur) * 0.8)) saturate(200%);
+            -webkit-backdrop-filter: blur(calc(var(--glass-blur) * 0.8)) saturate(200%);
+            border-radius: 28px;
+            padding: 18px 20px;
+            border: 0.5px solid rgba(255, 255, 255, 0.3);
+            box-shadow: 0 15px 30px rgba(0,0,0,0.15), inset 0 1px 1px rgba(255,255,255,0.2);
+            display: flex;
+            align-items: center;
+            gap: 16px;
+            transition: all 0.3s var(--ios-spring);
+            animation: cardFloatIn 0.5s ease backwards;
+            cursor: pointer;
+        }
+        .profile-card:nth-child(1) { animation-delay: 0.05s; }
+        .profile-card:nth-child(2) { animation-delay: 0.1s; }
+        .profile-card:nth-child(3) { animation-delay: 0.15s; }
+
+        @keyframes cardFloatIn {
+            from { opacity: 0; transform: translateY(20px) scale(0.96); }
+            to { opacity: 1; transform: translateY(0) scale(1); }
+        }
+
+        .profile-card:active {
+            transform: scale(0.98);
+            background: rgba(255, 255, 255, calc(var(--glass-alpha) * 1.5));
+        }
+
+        .profile-avatar {
+            width: 70px;
+            height: 70px;
+            border-radius: 35px;
+            background: linear-gradient(145deg, rgba(255,255,255,0.3), rgba(255,255,255,0.05));
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+            border: 1.5px solid rgba(255,255,255,0.4);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 2.2rem;
+            font-weight: 800;
+            color: #FFFFFF;
+            text-shadow: 0 4px 12px rgba(0,0,0,0.3);
+            box-shadow: inset 0 2px 4px rgba(255,255,255,0.3), 0 8px 12px rgba(0,0,0,0.1);
+            flex-shrink: 0;
+            transition: transform 0.2s;
+            overflow: hidden;
+        }
+        .profile-avatar img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            display: block;
+        }
+        .profile-avatar .avatar-text {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 100%;
+            height: 100%;
+        }
+        .profile-card:hover .profile-avatar {
+            transform: scale(1.02);
+        }
+
+        .profile-info {
+            flex: 1;
+            min-width: 0;
+        }
+
+        .profile-name {
+            font-size: 1.2rem;
+            font-weight: 800;
+            letter-spacing: -0.02em;
+            margin-bottom: 4px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            color: #FFFFFF;
+        }
+        .profile-badge {
+            background: rgba(255, 215, 0, 0.25);
+            backdrop-filter: blur(4px);
+            padding: 2px 8px;
+            border-radius: 20px;
+            font-size: 0.6rem;
+            font-weight: 600;
+            color: #FFE484;
+            border: 0.5px solid rgba(255,215,0,0.4);
+        }
+
+        .profile-meta {
+            font-size: 0.65rem;
+            color: var(--text-secondary);
+            margin-bottom: 8px;
+            display: flex;
+            gap: 12px;
+        }
+        .profile-meta i {
+            margin-right: 4px;
+            color: var(--accent-glow);
+        }
+
+        .profile-signature {
+            background: rgba(0, 0, 0, 0.1);
+            backdrop-filter: blur(4px);
+            padding: 8px 12px;
+            border-radius: 16px;
+            font-size: 0.8rem;
+            color: rgba(255, 255, 255, 0.9);
+            border: 0.5px solid rgba(255, 255, 255, 0.15);
+            line-height: 1.4;
+            cursor: default;
+            transition: all 0.2s;
+            word-break: break-word;
+        }
+        .profile-signature.editable {
+            cursor: text;
+            border: 0.5px dashed rgba(255, 255, 255, 0.4);
+        }
+        .profile-signature.editable:active {
+            background: rgba(255, 255, 255, 0.2);
+        }
+        .profile-signature i {
+            margin-right: 6px;
+            opacity: 0.6;
+        }
+        
+        /* 人物详情模态框特有样式 */
+        .profile-detail-avatar {
+            width: 100px; height: 100px; border-radius: 50px;
+            margin: 0 auto 16px; border: 2px solid rgba(255,255,255,0.4);
+            overflow: hidden; background: rgba(255,255,255,0.1);
+            backdrop-filter: blur(8px);
+        }
+        .profile-detail-avatar img { width: 100%; height: 100%; object-fit: cover; }
+        .profile-detail-avatar .avatar-text { width: 100%; height: 100%; display: flex; align-items: center; justify-content: center; font-size: 2.5rem; font-weight: 700; color: white; }
+        .profile-tags { display: flex; flex-wrap: wrap; gap: 6px; margin: 12px 0; }
+        .profile-tag { background: rgba(255,255,255,0.1); backdrop-filter: blur(4px); padding: 4px 12px; border-radius: 20px; font-size: 0.7rem; border: 0.5px solid rgba(255,255,255,0.2); }
+        .profile-bio { background: rgba(0,0,0,0.1); border-radius: 20px; padding: 16px; margin: 12px 0; font-size: 0.85rem; line-height: 1.6; border: 0.5px solid rgba(255,255,255,0.15); }
     </style>
 </head>
 <body>
@@ -232,6 +407,7 @@
 
     <div class="slider-wrapper">
         <div class="view-slider" id="viewSlider">
+            <!-- 日记页 -->
             <div class="view-page" id="diaryPage">
                 <div class="search-box">
                     <i class="fas fa-search" style="color: var(--text-secondary);"></i>
@@ -241,6 +417,18 @@
                 <div id="sinceTime" class="since-time">✨ 正在连接时光... ✨</div>
             </div>
 
+            <!-- 人物页 -->
+            <div class="view-page" id="profilePage">
+                <h3 style="color: #FFFFFF; margin-bottom: 20px; font-size: 1.2rem; letter-spacing: 1px; text-align: center;">
+                    <i class="fas fa-crown" style="color: #FFD700;"></i> 灵魂碎片 <i class="fas fa-crown" style="color: #FFD700;"></i>
+                </h3>
+                <div id="profileCardsContainer" class="profile-cards-container"></div>
+                <div style="text-align: center; margin-top: 24px; color: rgba(255,255,255,0.3); font-size: 0.65rem;">
+                    <i class="fas fa-fingerprint"></i> 点击卡片查看更多
+                </div>
+            </div>
+
+            <!-- 设置页 -->
             <div class="view-page" id="settingsPage">
                 <h3 style="color: #FFFFFF; margin-bottom: 14px; font-size: 1.1rem;"><i class="fas fa-sliders-h"></i> 界面调节</h3>
                 <div class="setting-item">
@@ -270,9 +458,11 @@
 <div class="bottom-nav" id="bottomDock">
     <div class="nav-indicator" id="navIndicator"></div>
     <button id="navDiary" class="nav-btn active">日记</button>
+    <button id="navProfile" class="nav-btn">我们</button>
     <button id="navSettings" class="nav-btn">设置</button>
 </div>
 
+<!-- 日记详情模态框 -->
 <div id="detailModal" class="modal">
     <div class="modal-content">
         <div class="modal-scroll-area" id="modalScrollArea">
@@ -284,6 +474,7 @@
     </div>
 </div>
 
+<!-- 写日记模态框 -->
 <div id="writeModal" class="modal">
     <div class="modal-content">
         <h3 style="font-size:1.1rem; margin-bottom:12px;"><i class="fas fa-pen-fancy"></i> 谱写新篇章</h3>
@@ -296,366 +487,608 @@
     </div>
 </div>
 
+<!-- 人物详情模态框 -->
+<div id="profileDetailModal" class="modal">
+    <div class="modal-content">
+        <div class="modal-scroll-area">
+            <div id="profileDetailContent"></div>
+        </div>
+        <div style="text-align:right; border-top:1px solid rgba(255,255,255,0.15); padding-top:10px;">
+            <button id="closeProfileModalBtn" style="background:rgba(255,255,255,0.12); backdrop-filter:blur(8px); border:0.5px solid rgba(255,255,255,0.25); border-radius:14px; padding:8px 18px; cursor:pointer; color:white; font-weight:700; font-size:0.8rem;">返回</button>
+        </div>
+    </div>
+</div>
+
 <script>
-    // ====================== 通用模态框关闭动画 ======================
-    function closeModalWithAnimation(modalElement) {
-        if (!modalElement) return;
-        const content = modalElement.querySelector('.modal-content');
-        if (!content) {
-            modalElement.style.display = 'none';
-            return;
-        }
-        content.classList.add('closing');
-        const onAnimationEnd = () => {
-            modalElement.style.display = 'none';
-            content.classList.remove('closing');
-            content.removeEventListener('animationend', onAnimationEnd);
+    (function(){
+        // ========== 头像配置（请替换为实际图片URL）==========
+        const PROFILE_AVATARS = {
+            '苹果': 'https://jjrwfiamjwryxkfpbopy.supabase.co/storage/v1/object/public/media/mmexport1775633455205.jpg',
+            '周灿': 'https://jjrwfiamjwryxkfpbopy.supabase.co/storage/v1/object/public/media/mmexport1775633445239.jpg',
+            '甜心': 'https://jjrwfiamjwryxkfpbopy.supabase.co/storage/v1/object/public/media/mmexport1775633449770.jpg'
         };
-        content.addEventListener('animationend', onAnimationEnd, { once: true });
-    }
-
-    // ====================== 时间计数器 ======================
-    function updateSinceTime() {
-        const startDate = new Date(2026, 0, 16, 22, 13);
-        const now = new Date();
-        const diffMs = now - startDate;
-        if (diffMs < 0) { document.getElementById('sinceTime').innerHTML = `✨ 时光未至 ✨`; return; }
-        const totalSeconds = Math.floor(diffMs / 1000);
-        const days = Math.floor(totalSeconds / 86400);
-        const hours = Math.floor((totalSeconds % 86400) / 3600);
-        const minutes = Math.floor((totalSeconds % 3600) / 60);
-        document.getElementById('sinceTime').innerHTML = `✨ 飞船已航行 ${days}天 ${hours}小时 ${minutes}分钟 ✨`;
-    }
-    setInterval(updateSinceTime, 1000); updateSinceTime();
-    
-    // ====================== 外观设置 ======================
-    function loadSettings() {
-        const savedAlpha = localStorage.getItem('glass_alpha');
-        if (savedAlpha !== null) {
-            const alpha = parseFloat(savedAlpha);
-            document.documentElement.style.setProperty('--glass-alpha', alpha);
-            document.getElementById('glassAlphaSlider').value = alpha;
-            document.getElementById('glassAlphaValue').innerText = alpha.toFixed(2);
-        }
-        const savedBlur = localStorage.getItem('bg_blur');
-        if (savedBlur !== null) {
-            const blur = parseInt(savedBlur);
-            document.documentElement.style.setProperty('--bg-blur', blur + 'px');
-            document.getElementById('blurSlider').value = blur;
-            document.getElementById('blurValue').innerText = blur + 'px';
-        }
-        const savedWallpaper = localStorage.getItem('bg_wallpaper');
-        if (savedWallpaper) {
-            document.documentElement.style.setProperty('--bg-image', `url(${savedWallpaper})`);
-            document.getElementById('wallpaperPreview').style.backgroundImage = `url(${savedWallpaper})`;
-        }
-    }
-    document.getElementById('glassAlphaSlider').addEventListener('input', (e) => {
-        const val = parseFloat(e.target.value); document.documentElement.style.setProperty('--glass-alpha', val);
-        document.getElementById('glassAlphaValue').innerText = val.toFixed(2); localStorage.setItem('glass_alpha', val);
-    });
-    document.getElementById('blurSlider').addEventListener('input', (e) => {
-        const val = e.target.value; document.documentElement.style.setProperty('--bg-blur', val + 'px');
-        document.getElementById('blurValue').innerText = val + 'px'; localStorage.setItem('bg_blur', val);
-    });
-    const wallpaperInput = document.getElementById('wallpaperInput');
-    document.getElementById('chooseWallpaperBtn').addEventListener('click', () => wallpaperInput.click());
-    wallpaperInput.addEventListener('change', (e) => {
-        const file = e.target.files[0];
-        if (file && file.type.startsWith('image/')) {
-            const reader = new FileReader();
-            reader.onload = function(ev) {
-                const dataUrl = ev.target.result; localStorage.setItem('bg_wallpaper', dataUrl);
-                document.documentElement.style.setProperty('--bg-image', `url(${dataUrl})`);
-                document.getElementById('wallpaperPreview').style.backgroundImage = `url(${dataUrl})`;
-            }; reader.readAsDataURL(file);
-        }
-    });
-    document.getElementById('resetWallpaperBtn').addEventListener('click', () => {
-        localStorage.removeItem('bg_wallpaper');
-        document.documentElement.style.setProperty('--bg-image', 'radial-gradient(circle at 10% 20%, rgba(255,106,0,0.25), rgba(13,13,24,0.1) 60%), radial-gradient(circle at 90% 80%, rgba(0,162,255,0.2), transparent 50%)');
-        document.getElementById('wallpaperPreview').style.backgroundImage = 'none';
-    });
-    
-    // ====================== 液态DOCK交互 ======================
-    const bottomDock = document.getElementById('bottomDock');
-    const navIndicator = document.getElementById('navIndicator');
-    const viewSlider = document.getElementById('viewSlider');
-    const navDiary = document.getElementById('navDiary');
-    const navSettings = document.getElementById('navSettings');
-    const fab = document.getElementById('fabBtn');
-
-    let startX = 0, currentX = 0, isDragging = false, lastX = 0, velocity = 0;
-    const maxMove = 135;
-
-    function updateLiquid(x) {
-        const progress = x / maxMove;
-        const speed = Math.min(Math.abs(velocity) * 0.06, 0.5);
-        const scaleX = 1 + speed;
-        const scaleY = 1 - speed * 0.4;
-        const skew = velocity * 0.15;
-        navIndicator.style.transform = `translateX(${x}px) scale(${scaleX}, ${scaleY}) skewX(${skew}deg)`;
-        viewSlider.style.transform = `translateX(${progress * -50}%)`;
-    }
-
-    function snap(idx) {
-        const targetX = idx * maxMove;
-        currentX = targetX;
-        navIndicator.style.transition = 'all 0.6s var(--ios-spring)';
-        viewSlider.style.transition = 'transform 0.6s var(--ios-spring)';
-        navIndicator.style.transform = `translateX(${targetX}px) scale(1, 1) skewX(0deg)`;
-        viewSlider.style.transform = `translateX(${idx * -50}%)`;
-        navDiary.classList.toggle('active', idx === 0);
-        navSettings.classList.toggle('active', idx === 1);
-        if (idx === 0 && currentUser) fab.style.display = 'flex';
-        else fab.style.display = 'none';
-    }
-
-    bottomDock.addEventListener('touchstart', (e) => {
-        isDragging = true;
-        startX = e.touches[0].clientX - currentX;
-        navIndicator.style.transition = 'none';
-        viewSlider.style.transition = 'none';
-    });
-    bottomDock.addEventListener('touchmove', (e) => {
-        if (!isDragging) return;
-        const x = e.touches[0].clientX - startX;
-        if (x >= 0 && x <= maxMove) {
-            velocity = x - lastX;
-            currentX = x;
-            lastX = x;
-            updateLiquid(x);
-        }
-    });
-    bottomDock.addEventListener('touchend', () => {
-        isDragging = false;
-        snap(currentX > maxMove / 2 ? 1 : 0);
-    });
-    navDiary.addEventListener('click', () => snap(0));
-    navSettings.addEventListener('click', () => snap(1));
-
-    // ====================== Supabase 业务逻辑 ======================
-    const SUPABASE_URL = "https://jjrwfiamjwryxkfpbopy.supabase.co";
-    const SUPABASE_ANON_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImpqcndmaWFtandyeXhrZnBib3B5Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzUxNjI1NjIsImV4cCI6MjA5MDczODU2Mn0.OUOGJp6JBjsHHelx9lbh_bE2rYeUh5QG0BuOtVN8cew";
-    const sbClient = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
-
-    const usersDB = [ { username: "苹果", password: "34679134" }, { username: "周灿", password: "345187213" }, { username: "甜心", password: "243157318" } ];
-    let currentUser = null; let allDiaries = []; let allReplies = []; let searchKeyword = "";
-
-    const authArea = document.getElementById("authArea");
-    const diaryGrid = document.getElementById("diaryGrid");
-    const searchInput = document.getElementById("searchInput");
-    const detailModal = document.getElementById("detailModal");
-    const modalContent = document.getElementById("modalContent");
-    const writeModal = document.getElementById("writeModal");
-
-    function saveCredentials(u,p) { localStorage.setItem("saved_username",u); localStorage.setItem("saved_password",p); }
-    function clearCredentials() { localStorage.removeItem("saved_username"); localStorage.removeItem("saved_password"); }
-    function getSavedCredentials() { const u = localStorage.getItem("saved_username"); const p = localStorage.getItem("saved_password"); return (u && p) ? { username: u, password: p } : null; }
-
-    function renderAuthArea() {
-        if (!currentUser) {
-            const saved = getSavedCredentials();
-            authArea.innerHTML = `<div class="login-form"><input type="text" id="loginUsername" placeholder="用户名" value="${saved ? saved.username : ''}"><input type="password" id="loginPassword" placeholder="密码" value="${saved ? saved.password : ''}"><button id="doLoginBtn">登录</button></div>`;
-            document.getElementById("doLoginBtn")?.addEventListener("click", doLogin);
-            fab.style.display = "none";
-        } else {
-            authArea.innerHTML = `<div style="font-weight:700; font-size:0.8rem;"><i class="fas fa-user-circle"></i> 欢迎，${currentUser}</div><button id="logoutBtn" class="logout-btn">登出</button>`;
-            document.getElementById("logoutBtn")?.addEventListener("click", doLogout);
-            if (viewSlider.style.transform === 'translateX(0%)' || viewSlider.style.transform === '') fab.style.display = 'flex';
-            else fab.style.display = 'none';
-        }
-    }
-
-    function doLogin() {
-        const username = document.getElementById("loginUsername").value.trim();
-        const password = document.getElementById("loginPassword").value.trim();
-        const user = usersDB.find(u => u.username === username && u.password === password);
-        if (user) { currentUser = user.username; saveCredentials(username, password); renderAuthArea(); refreshAllData(); } else { alert("用户名或密码错误"); }
-    }
-    function doLogout() { currentUser = null; clearCredentials(); renderAuthArea(); allDiaries = []; allReplies = []; renderDiaryGrid(); fab.style.display = "none"; }
-    async function autoLogin() { const saved = getSavedCredentials(); if (saved && usersDB.find(u => u.username === saved.username && u.password === saved.password)) { currentUser = saved.username; renderAuthArea(); await refreshAllData(); } else { renderAuthArea(); } }
-
-    async function loadDiaries() { const { data, error } = await sbClient.from('diaries').select('*').order('created_at', { ascending: false }); return data || []; }
-    async function loadReplies() { const { data, error } = await sbClient.from('replies').select('*').order('created_at', { ascending: true }); return data || []; }
-    
-    async function addDiary(title, content) {
-        const now = new Date(); const dateStr = `${now.getFullYear()}-${String(now.getMonth()+1).padStart(2,'0')}-${String(now.getDate()).padStart(2,'0')} ${String(now.getHours()).padStart(2,'0')}:${String(now.getMinutes()).padStart(2,'0')}`;
-        const { error } = await sbClient.from('diaries').insert([{ id: Date.now(), user_id: 0, username: currentUser, title, content, date_str: dateStr, created_at: now.toISOString(), likes_count: 0, liked_by: [] }]);
-        return !error;
-    }
-    
-    async function deleteDiary(diaryId) {
-        await sbClient.from('replies').delete().eq('diary_id', diaryId);
-        const { error } = await sbClient.from('diaries').delete().eq('id', diaryId);
-        if (error) { alert("删除失败"); return false; }
-        return true;
-    }
-    
-    async function toggleLike(target, id, type) {
-        const table = type === 'diary' ? 'diaries' : 'replies';
-        const item = (type === 'diary' ? allDiaries : allReplies).find(i => i.id === id);
-        if (!item) return;
-        let liked_by = item.liked_by || [];
-        let isLiked = liked_by.includes(currentUser);
-        let newLikedBy = isLiked ? liked_by.filter(u => u !== currentUser) : [...liked_by, currentUser];
-        let newLikesCount = isLiked ? (item.likes_count || 0) - 1 : (item.likes_count || 0) + 1;
-        await sbClient.from(table).update({ likes_count: newLikesCount, liked_by: newLikedBy }).eq('id', id);
-        await refreshAllData();
-    }
-
-    async function addReply(diaryId, content, parentReplyId = null) {
-        const newId = Date.now();
-        const { error } = await sbClient.from('replies').insert([{
-            id: newId, diary_id: diaryId, username: currentUser, content: content,
-            parent_reply_id: parentReplyId,
-            created_at: new Date().toISOString(), likes_count: 0, liked_by: []
-        }]);
-        return !error;
-    }
-
-    async function deleteReply(replyId) {
-        const { error } = await sbClient.from('replies').delete().eq('id', replyId);
-        if (error) { alert("删除回复失败"); return false; }
-        return true;
-    }
-
-    async function refreshAllData() { if (!currentUser) return; allDiaries = await loadDiaries(); allReplies = await loadReplies(); renderDiaryGrid(); }
-
-    function renderDiaryGrid() {
-        if (!currentUser) { diaryGrid.innerHTML = `<div style="grid-column:1/-1; text-align:center; color:#ffeedd; font-size:0.8rem;">🔐 请先登录</div>`; return; }
-        let list = allDiaries;
-        if (searchKeyword.trim()) { const kw = searchKeyword.trim().toLowerCase(); list = list.filter(d => d.title.toLowerCase().includes(kw) || d.content.toLowerCase().includes(kw)); }
-        if (list.length === 0) { diaryGrid.innerHTML = `<div style="grid-column:1/-1; text-align:center; padding:20px; color:#ffeedd; font-size:0.8rem;">✨ 暂无日记</div>`; return; }
-        diaryGrid.innerHTML = "";
-        for (let diary of list) {
-            const liked = (diary.liked_by || []).includes(currentUser);
-            const isOwn = diary.username === currentUser;
-            const replyCount = allReplies.filter(r => r.diary_id === diary.id).length;
-            const card = document.createElement("div"); card.className = "diary-card";
-            card.innerHTML = `
-                <div class="diary-username"><i class="fas fa-user-pen"></i> ${escapeHtml(diary.username)}</div>
-                <div class="diary-title">${escapeHtml(diary.title)}</div>
-                <div class="diary-date">${diary.date_str}</div>
-                <div class="diary-content">${escapeHtml(diary.content)}</div>
-                <div style="display:flex; justify-content:space-between; align-items:center; margin-top:auto;">
-                    <div style="display:flex; gap:6px;">
-                        <button class="like-btn ${liked ? 'liked' : ''}" data-id="${diary.id}"><i class="fas fa-heart"></i> ${diary.likes_count || 0}</button>
-                        <div class="comment-count"><i class="fas fa-comment"></i> ${replyCount}</div>
-                    </div>
-                    ${isOwn ? `<button class="action-icon delete-diary" data-id="${diary.id}" style="background:rgba(255,59,48,0.15); color:#FF3B30;"><i class="fas fa-trash-alt"></i></button>` : ''}
-                </div>
-            `;
-            card.addEventListener("click", (e) => { if (!e.target.closest('.like-btn') && !e.target.closest('.delete-diary')) openDetailModal(diary.id); });
-            diaryGrid.appendChild(card);
-        }
-        document.querySelectorAll('.like-btn').forEach(btn => btn.onclick = async (e) => { e.stopPropagation(); await toggleLike('diary', parseInt(btn.dataset.id), 'diary'); });
-        document.querySelectorAll('.delete-diary').forEach(btn => btn.onclick = async (e) => { e.stopPropagation(); if(confirm("确定抹去这段记忆吗？")) { await deleteDiary(parseInt(btn.dataset.id)); await refreshAllData(); } });
-    }
-
-    function buildReplyTree(replies, parentId = null) {
-        const children = replies.filter(r => r.parent_reply_id === parentId);
-        if (children.length === 0) return '';
-        let html = '';
-        for (let rep of children) {
-            const liked = (rep.liked_by || []).includes(currentUser);
-            const isOwn = rep.username === currentUser;
-            const quoteHtml = (rep.parent_reply_id) ? `<div class="reply-quote"><i class="fas fa-quote-left"></i> 回复 @${escapeHtml(replies.find(r=>r.id===rep.parent_reply_id)?.username || '?' )}：${escapeHtml(replies.find(r=>r.id===rep.parent_reply_id)?.content?.substring(0,50) || '')}</div>` : '';
-            html += `
-                <div class="reply-item">
-                    <div style="display:flex; justify-content:space-between; font-size:0.65rem; color:var(--text-secondary); margin-bottom:4px;">
-                        <span><i class="fas fa-reply"></i> ${escapeHtml(rep.username)}</span>
-                        <span style="font-size:0.6rem;">${new Date(rep.created_at).toLocaleString()}</span>
-                    </div>
-                    ${quoteHtml}
-                    <div style="font-size:0.75rem; color:rgba(255,255,255,0.9); margin-bottom:6px;">${escapeHtml(rep.content)}</div>
-                    <div style="display:flex; justify-content:space-between; align-items:center;">
-                        <button class="like-reply-btn" data-id="${rep.id}" style="background:none; border:none; color:${liked?'#FF3B30':'rgba(255,255,255,0.6)'}; font-size:0.65rem;"><i class="fas fa-heart"></i> ${rep.likes_count||0}</button>
-                        <div style="display:flex; gap:8px;">
-                            <button class="quote-reply-btn" data-id="${rep.id}" data-username="${escapeHtml(rep.username)}" data-content="${escapeHtml(rep.content)}" style="background:none; border:none; color:#FFA500; font-size:0.65rem;"><i class="fas fa-comment-dots"></i> 回复</button>
-                            ${isOwn ? `<button class="delete-reply-btn" data-id="${rep.id}" style="background:none; border:none; color:#FF3B30; font-size:0.65rem;"><i class="fas fa-trash-alt"></i> 删除</button>` : ''}
-                        </div>
-                    </div>
-                </div>
-                <div style="margin-left: 20px; border-left: 2px solid rgba(255,106,0,0.3); padding-left: 8px;">
-                    ${buildReplyTree(replies, rep.id)}
-                </div>
-            `;
-        }
-        return html;
-    }
-
-    async function openDetailModal(diaryId) {
-        const diary = allDiaries.find(d => d.id === diaryId); if (!diary) return;
-        const diaryReplies = allReplies.filter(r => r.diary_id === diaryId);
-        diaryReplies.sort((a,b) => new Date(a.created_at) - new Date(b.created_at));
-        const repliesTreeHtml = buildReplyTree(diaryReplies);
         
-        modalContent.innerHTML = `
-            <div style="margin-bottom:12px;">
-                <div class="diary-username">${escapeHtml(diary.username)}</div>
-                <h3 style="margin: 4px 0; font-size:1rem;">${escapeHtml(diary.title)}</h3>
-                <div style="font-size:0.6rem; color:var(--text-secondary); margin-bottom:8px;">${diary.date_str}</div>
-                <div style="white-space:pre-wrap; font-size:0.8rem; line-height:1.5; color:rgba(255,255,255,0.9);">${escapeHtml(diary.content)}</div>
-            </div>
-            <div style="border-top:1px solid rgba(255,255,255,0.15); padding-top:10px;">
-                <strong style="font-size:0.8rem;">💬 共鸣 (${diaryReplies.length})</strong>
-                <div id="repliesTreeContainer" style="margin-top:8px;">${repliesTreeHtml || '<div style="padding:10px; text-align:center; font-size:0.75rem; color:rgba(255,255,255,0.4);">静候第一声共鸣</div>'}</div>
-                <div style="display:flex; gap:8px; margin-top:12px;">
-                    <input type="text" id="modalReplyInput" placeholder="写下你的共鸣..." style="flex:1;">
-                    <button id="modalReplySubmit">发送</button>
-                </div>
-            </div>
-        `;
-        detailModal.style.display = "flex";
-        
-        document.getElementById("modalReplySubmit").onclick = async () => {
-            const content = document.getElementById("modalReplyInput").value.trim(); if (!content) return;
-            if (await addReply(diaryId, content, null)) { await refreshAllData(); openDetailModal(diaryId); }
+        // 人物详细介绍数据
+        const PROFILE_DETAILS = {
+            '苹果': {
+                bio: '喜欢在深夜写下那些白天说不出口的话，三人中最先提议建这个日记本的人。',
+                tags: ['#帅', '#游戏狂魔', '#帅','#帅'],
+                motto: '低调'
+            },
+            '周灿': {
+                bio: '光而不耀，静水流深。理性的外表下藏着一颗浪漫的心，擅长把日常琐事写成诗。据说他的日记里藏着很多只有甜心能看懂的暗语。',
+                tags: ['#傻', '#笨', '#猫奴'],
+                motto: '世界先爱了我，我不能不爱它。'
+            },
+            '甜心': {
+                bio: '保持甜蜜，保持锋利。是三人中的粘合剂和小太阳，但日记里偶尔也会流露出锋利的一面。喜欢用颜文字和感叹号表达情绪。',
+                tags: ['#女神', '#偶像', '#明星'],
+                motto: '生活就像一盒巧克力。'
+            }
         };
-        document.querySelectorAll('.like-reply-btn').forEach(btn => btn.onclick = async (e) => {
-            const id = parseInt(btn.dataset.id);
-            await toggleLike('reply', id, 'reply');
-            openDetailModal(diaryId);
+
+        // ========== 人物基础数据（增加 badge 字段） ==========
+        const PROFILES = [
+            { username: '苹果', color: '#FF6A00', joinDate: '2026-01-16', badge: '管理员' },
+            { username: '周灿', color: '#00A2FF', joinDate: '2026-01-16', badge: '萝莉' },
+            { username: '甜心', color: '#FF2D9E', joinDate: '2026-01-16', badge: '御姐' }
+        ];
+
+        // ========== 头像辅助函数 ==========
+        function getUserAvatarUrl(username) {
+            return PROFILE_AVATARS[username] || '';
+        }
+        
+        // 生成头像HTML (用于小尺寸)
+        function renderAvatarHtml(username, sizeClass = '') {
+            const url = getUserAvatarUrl(username);
+            const firstChar = username.charAt(0);
+            if (url) {
+                return `<img src="${url}" alt="${username}" onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';">`;
+            }
+            return `<div class="avatar-text">${firstChar}</div>`;
+        }
+
+        // 通用模态框关闭动画
+        function closeModalWithAnimation(modalElement) {
+            if (!modalElement) return;
+            const content = modalElement.querySelector('.modal-content');
+            if (!content) {
+                modalElement.style.display = 'none';
+                return;
+            }
+            content.classList.add('closing');
+            const onAnimationEnd = () => {
+                modalElement.style.display = 'none';
+                content.classList.remove('closing');
+                content.removeEventListener('animationend', onAnimationEnd);
+            };
+            content.addEventListener('animationend', onAnimationEnd, { once: true });
+        }
+
+        // 时间计数器
+        function updateSinceTime() {
+            const startDate = new Date(2026, 0, 16, 22, 13);
+            const now = new Date();
+            const diffMs = now - startDate;
+            if (diffMs < 0) { document.getElementById('sinceTime').innerHTML = `✨ 时光未至 ✨`; return; }
+            const totalSeconds = Math.floor(diffMs / 1000);
+            const days = Math.floor(totalSeconds / 86400);
+            const hours = Math.floor((totalSeconds % 86400) / 3600);
+            const minutes = Math.floor((totalSeconds % 3600) / 60);
+            document.getElementById('sinceTime').innerHTML = `✨ 飞船已航行 ${days}天 ${hours}小时 ${minutes}分钟 ✨`;
+        }
+        setInterval(updateSinceTime, 1000); updateSinceTime();
+        
+        // 外观设置
+        function loadSettings() {
+            const savedAlpha = localStorage.getItem('glass_alpha');
+            if (savedAlpha !== null) {
+                const alpha = parseFloat(savedAlpha);
+                document.documentElement.style.setProperty('--glass-alpha', alpha);
+                document.getElementById('glassAlphaSlider').value = alpha;
+                document.getElementById('glassAlphaValue').innerText = alpha.toFixed(2);
+            }
+            const savedBlur = localStorage.getItem('bg_blur');
+            if (savedBlur !== null) {
+                const blur = parseInt(savedBlur);
+                document.documentElement.style.setProperty('--bg-blur', blur + 'px');
+                document.getElementById('blurSlider').value = blur;
+                document.getElementById('blurValue').innerText = blur + 'px';
+            }
+            const savedWallpaper = localStorage.getItem('bg_wallpaper');
+            if (savedWallpaper) {
+                document.documentElement.style.setProperty('--bg-image', `url(${savedWallpaper})`);
+                document.getElementById('wallpaperPreview').style.backgroundImage = `url(${savedWallpaper})`;
+            }
+        }
+        document.getElementById('glassAlphaSlider').addEventListener('input', (e) => {
+            const val = parseFloat(e.target.value); document.documentElement.style.setProperty('--glass-alpha', val);
+            document.getElementById('glassAlphaValue').innerText = val.toFixed(2); localStorage.setItem('glass_alpha', val);
         });
-        document.querySelectorAll('.delete-reply-btn').forEach(btn => btn.onclick = async (e) => {
-            if (confirm("删除这条回复？")) {
-                await deleteReply(parseInt(btn.dataset.id));
-                await refreshAllData();
-                openDetailModal(diaryId);
+        document.getElementById('blurSlider').addEventListener('input', (e) => {
+            const val = e.target.value; document.documentElement.style.setProperty('--bg-blur', val + 'px');
+            document.getElementById('blurValue').innerText = val + 'px'; localStorage.setItem('bg_blur', val);
+        });
+        const wallpaperInput = document.getElementById('wallpaperInput');
+        document.getElementById('chooseWallpaperBtn').addEventListener('click', () => wallpaperInput.click());
+        wallpaperInput.addEventListener('change', (e) => {
+            const file = e.target.files[0];
+            if (file && file.type.startsWith('image/')) {
+                const reader = new FileReader();
+                reader.onload = function(ev) {
+                    const dataUrl = ev.target.result; localStorage.setItem('bg_wallpaper', dataUrl);
+                    document.documentElement.style.setProperty('--bg-image', `url(${dataUrl})`);
+                    document.getElementById('wallpaperPreview').style.backgroundImage = `url(${dataUrl})`;
+                }; reader.readAsDataURL(file);
             }
         });
-        document.querySelectorAll('.quote-reply-btn').forEach(btn => btn.onclick = async () => {
-            const parentId = parseInt(btn.dataset.id);
-            const parentUsername = btn.dataset.username;
-            const parentContent = btn.dataset.content;
-            const preview = parentContent.length>60 ? parentContent.slice(0,60)+"…" : parentContent;
-            const replyText = prompt(`回复 @${parentUsername}：\n“${preview}”\n\n输入你的回复：`);
-            if (replyText && replyText.trim()) {
-                if (await addReply(diaryId, replyText.trim(), parentId)) {
+        document.getElementById('resetWallpaperBtn').addEventListener('click', () => {
+            localStorage.removeItem('bg_wallpaper');
+            document.documentElement.style.setProperty('--bg-image', 'radial-gradient(circle at 10% 20%, rgba(255,106,0,0.25), rgba(13,13,24,0.1) 60%), radial-gradient(circle at 90% 80%, rgba(0,162,255,0.2), transparent 50%)');
+            document.getElementById('wallpaperPreview').style.backgroundImage = 'none';
+        });
+        
+        // 液态DOCK交互（三页）
+        const bottomDock = document.getElementById('bottomDock');
+        const navIndicator = document.getElementById('navIndicator');
+        const viewSlider = document.getElementById('viewSlider');
+        const navDiary = document.getElementById('navDiary');
+        const navProfile = document.getElementById('navProfile');
+        const navSettings = document.getElementById('navSettings');
+        const fab = document.getElementById('fabBtn');
+
+        let startX = 0, currentX = 0, isDragging = false, lastX = 0, velocity = 0;
+        const maxMove = 200;
+
+        function updateLiquid(x) {
+            const progress = x / maxMove;
+            const speed = Math.min(Math.abs(velocity) * 0.06, 0.5);
+            const scaleX = 1 + speed;
+            const scaleY = 1 - speed * 0.4;
+            const skew = velocity * 0.15;
+            navIndicator.style.transform = `translateX(${x}px) scale(${scaleX}, ${scaleY}) skewX(${skew}deg)`;
+            viewSlider.style.transform = `translateX(${progress * -100}%)`;
+        }
+
+        function snap(idx) {
+            const targetX = idx * (maxMove / 2);
+            currentX = targetX;
+            navIndicator.style.transition = 'all 0.6s var(--ios-spring)';
+            viewSlider.style.transition = 'transform 0.6s var(--ios-spring)';
+            navIndicator.style.transform = `translateX(${targetX}px) scale(1, 1) skewX(0deg)`;
+            viewSlider.style.transform = `translateX(${idx * -33.333}%)`;
+            
+            navDiary.classList.toggle('active', idx === 0);
+            navProfile.classList.toggle('active', idx === 1);
+            navSettings.classList.toggle('active', idx === 2);
+            
+            if (idx === 0 && currentUser) fab.style.display = 'flex';
+            else fab.style.display = 'none';
+            
+            if (idx === 1 && currentUser) {
+                renderProfileCards();
+            }
+        }
+
+        bottomDock.addEventListener('touchstart', (e) => {
+            isDragging = true;
+            startX = e.touches[0].clientX - currentX;
+            navIndicator.style.transition = 'none';
+            viewSlider.style.transition = 'none';
+        });
+        bottomDock.addEventListener('touchmove', (e) => {
+            if (!isDragging) return;
+            const x = e.touches[0].clientX - startX;
+            if (x >= 0 && x <= maxMove) {
+                velocity = x - lastX;
+                currentX = x;
+                lastX = x;
+                updateLiquid(x);
+            }
+        });
+        bottomDock.addEventListener('touchend', () => {
+            isDragging = false;
+            const third = maxMove / 3;
+            if (currentX < third) snap(0);
+            else if (currentX < 2 * third) snap(1);
+            else snap(2);
+        });
+        navDiary.addEventListener('click', () => snap(0));
+        navProfile.addEventListener('click', () => snap(1));
+        navSettings.addEventListener('click', () => snap(2));
+
+        // Supabase 配置
+        const SUPABASE_URL = "https://jjrwfiamjwryxkfpbopy.supabase.co";
+        const SUPABASE_ANON_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImpqcndmaWFtandyeXhrZnBib3B5Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzUxNjI1NjIsImV4cCI6MjA5MDczODU2Mn0.OUOGJp6JBjsHHelx9lbh_bE2rYeUh5QG0BuOtVN8cew";
+        const sbClient = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+
+        const usersDB = [ { username: "苹果", password: "34679134" }, { username: "周灿", password: "345187213" }, { username: "甜心", password: "243157318" } ];
+        let currentUser = null; let allDiaries = []; let allReplies = []; let searchKeyword = "";
+
+        const authArea = document.getElementById("authArea");
+        const diaryGrid = document.getElementById("diaryGrid");
+        const searchInput = document.getElementById("searchInput");
+        const detailModal = document.getElementById("detailModal");
+        const modalContent = document.getElementById("modalContent");
+        const writeModal = document.getElementById("writeModal");
+        const profileDetailModal = document.getElementById("profileDetailModal");
+        const profileDetailContent = document.getElementById("profileDetailContent");
+
+        function saveCredentials(u,p) { localStorage.setItem("saved_username",u); localStorage.setItem("saved_password",p); }
+        function clearCredentials() { localStorage.removeItem("saved_username"); localStorage.removeItem("saved_password"); }
+        function getSavedCredentials() { const u = localStorage.getItem("saved_username"); const p = localStorage.getItem("saved_password"); return (u && p) ? { username: u, password: p } : null; }
+
+        function renderAuthArea() {
+            if (!currentUser) {
+                const saved = getSavedCredentials();
+                authArea.innerHTML = `<div class="login-form"><input type="text" id="loginUsername" placeholder="用户名" value="${saved ? saved.username : ''}"><input type="password" id="loginPassword" placeholder="密码" value="${saved ? saved.password : ''}"><button id="doLoginBtn">登录</button></div>`;
+                document.getElementById("doLoginBtn")?.addEventListener("click", doLogin);
+                fab.style.display = "none";
+            } else {
+                authArea.innerHTML = `<div style="font-weight:700; font-size:0.8rem;"><i class="fas fa-user-circle"></i> 欢迎，${currentUser}</div><button id="logoutBtn" class="logout-btn">登出</button>`;
+                document.getElementById("logoutBtn")?.addEventListener("click", doLogout);
+                if (viewSlider.style.transform === 'translateX(0%)' || viewSlider.style.transform === '') fab.style.display = 'flex';
+                else fab.style.display = 'none';
+            }
+        }
+
+        function doLogin() {
+            const username = document.getElementById("loginUsername").value.trim();
+            const password = document.getElementById("loginPassword").value.trim();
+            const user = usersDB.find(u => u.username === username && u.password === password);
+            if (user) { currentUser = user.username; saveCredentials(username, password); renderAuthArea(); refreshAllData(); } else { alert("用户名或密码错误"); }
+        }
+        function doLogout() { currentUser = null; clearCredentials(); renderAuthArea(); allDiaries = []; allReplies = []; renderDiaryGrid(); fab.style.display = "none"; }
+        async function autoLogin() { const saved = getSavedCredentials(); if (saved && usersDB.find(u => u.username === saved.username && u.password === saved.password)) { currentUser = saved.username; renderAuthArea(); await refreshAllData(); } else { renderAuthArea(); } }
+
+        async function loadDiaries() { const { data, error } = await sbClient.from('diaries').select('*').order('created_at', { ascending: false }); return data || []; }
+        async function loadReplies() { const { data, error } = await sbClient.from('replies').select('*').order('created_at', { ascending: true }); return data || []; }
+        
+        async function addDiary(title, content) {
+            const now = new Date(); const dateStr = `${now.getFullYear()}-${String(now.getMonth()+1).padStart(2,'0')}-${String(now.getDate()).padStart(2,'0')} ${String(now.getHours()).padStart(2,'0')}:${String(now.getMinutes()).padStart(2,'0')}`;
+            const { error } = await sbClient.from('diaries').insert([{ id: Date.now(), user_id: 0, username: currentUser, title, content, date_str: dateStr, created_at: now.toISOString(), likes_count: 0, liked_by: [] }]);
+            return !error;
+        }
+        
+        async function deleteDiary(diaryId) {
+            await sbClient.from('replies').delete().eq('diary_id', diaryId);
+            const { error } = await sbClient.from('diaries').delete().eq('id', diaryId);
+            if (error) { alert("删除失败"); return false; }
+            return true;
+        }
+        
+        async function toggleLike(target, id, type) {
+            const table = type === 'diary' ? 'diaries' : 'replies';
+            const item = (type === 'diary' ? allDiaries : allReplies).find(i => i.id === id);
+            if (!item) return;
+            let liked_by = item.liked_by || [];
+            let isLiked = liked_by.includes(currentUser);
+            let newLikedBy = isLiked ? liked_by.filter(u => u !== currentUser) : [...liked_by, currentUser];
+            let newLikesCount = isLiked ? (item.likes_count || 0) - 1 : (item.likes_count || 0) + 1;
+            await sbClient.from(table).update({ likes_count: newLikesCount, liked_by: newLikedBy }).eq('id', id);
+            await refreshAllData();
+        }
+
+        async function addReply(diaryId, content, parentReplyId = null) {
+            const newId = Date.now();
+            const { error } = await sbClient.from('replies').insert([{
+                id: newId, diary_id: diaryId, username: currentUser, content: content,
+                parent_reply_id: parentReplyId,
+                created_at: new Date().toISOString(), likes_count: 0, liked_by: []
+            }]);
+            return !error;
+        }
+
+        async function deleteReply(replyId) {
+            const { error } = await sbClient.from('replies').delete().eq('id', replyId);
+            if (error) { alert("删除回复失败"); return false; }
+            return true;
+        }
+
+        async function refreshAllData() { if (!currentUser) return; allDiaries = await loadDiaries(); allReplies = await loadReplies(); renderDiaryGrid(); }
+
+        function renderDiaryGrid() {
+            if (!currentUser) { diaryGrid.innerHTML = `<div style="grid-column:1/-1; text-align:center; color:#ffeedd; font-size:0.8rem;">🔐 请先登录</div>`; return; }
+            let list = allDiaries;
+            if (searchKeyword.trim()) { const kw = searchKeyword.trim().toLowerCase(); list = list.filter(d => d.title.toLowerCase().includes(kw) || d.content.toLowerCase().includes(kw)); }
+            if (list.length === 0) { diaryGrid.innerHTML = `<div style="grid-column:1/-1; text-align:center; padding:20px; color:#ffeedd; font-size:0.8rem;">✨ 暂无日记</div>`; return; }
+            diaryGrid.innerHTML = "";
+            for (let diary of list) {
+                const liked = (diary.liked_by || []).includes(currentUser);
+                const isOwn = diary.username === currentUser;
+                const replyCount = allReplies.filter(r => r.diary_id === diary.id).length;
+                const card = document.createElement("div"); card.className = "diary-card";
+                const avatarHtml = renderAvatarHtml(diary.username);
+                card.innerHTML = `
+                    <div class="diary-header">
+                        <div class="diary-avatar">
+                            ${avatarHtml}
+                            ${!getUserAvatarUrl(diary.username) ? `<div class="avatar-text">${diary.username.charAt(0)}</div>` : ''}
+                        </div>
+                        <div class="diary-username"><i class="fas fa-user-pen" style="margin-right:3px;"></i>${escapeHtml(diary.username)}</div>
+                    </div>
+                    <div class="diary-title">${escapeHtml(diary.title)}</div>
+                    <div class="diary-date">${diary.date_str}</div>
+                    <div class="diary-content">${escapeHtml(diary.content)}</div>
+                    <div style="display:flex; justify-content:space-between; align-items:center; margin-top:auto;">
+                        <div style="display:flex; gap:6px;">
+                            <button class="like-btn ${liked ? 'liked' : ''}" data-id="${diary.id}"><i class="fas fa-heart"></i> ${diary.likes_count || 0}</button>
+                            <div class="comment-count"><i class="fas fa-comment"></i> ${replyCount}</div>
+                        </div>
+                        ${isOwn ? `<button class="action-icon delete-diary" data-id="${diary.id}" style="background:rgba(255,59,48,0.15); color:#FF3B30;"><i class="fas fa-trash-alt"></i></button>` : ''}
+                    </div>
+                `;
+                card.addEventListener("click", (e) => { if (!e.target.closest('.like-btn') && !e.target.closest('.delete-diary')) openDetailModal(diary.id); });
+                diaryGrid.appendChild(card);
+            }
+            document.querySelectorAll('.like-btn').forEach(btn => btn.onclick = async (e) => { e.stopPropagation(); await toggleLike('diary', parseInt(btn.dataset.id), 'diary'); });
+            document.querySelectorAll('.delete-diary').forEach(btn => btn.onclick = async (e) => { e.stopPropagation(); if(confirm("确定抹去这段记忆吗？")) { await deleteDiary(parseInt(btn.dataset.id)); await refreshAllData(); } });
+        }
+
+        function buildReplyTree(replies, parentId = null) {
+            const children = replies.filter(r => r.parent_reply_id === parentId);
+            if (children.length === 0) return '';
+            let html = '';
+            for (let rep of children) {
+                const liked = (rep.liked_by || []).includes(currentUser);
+                const isOwn = rep.username === currentUser;
+                const quoteHtml = (rep.parent_reply_id) ? `<div class="reply-quote"><i class="fas fa-quote-left"></i> 回复 @${escapeHtml(replies.find(r=>r.id===rep.parent_reply_id)?.username || '?' )}：${escapeHtml(replies.find(r=>r.id===rep.parent_reply_id)?.content?.substring(0,50) || '')}</div>` : '';
+                const avatarHtml = renderAvatarHtml(rep.username);
+                html += `
+                    <div class="reply-item">
+                        <div class="reply-header">
+                            <div class="reply-avatar">
+                                ${avatarHtml}
+                                ${!getUserAvatarUrl(rep.username) ? `<div class="avatar-text">${rep.username.charAt(0)}</div>` : ''}
+                            </div>
+                            <div style="flex:1; display:flex; justify-content:space-between; align-items:center;">
+                                <span style="font-size:0.65rem; color:var(--text-secondary);"><i class="fas fa-reply" style="margin-right:4px;"></i>${escapeHtml(rep.username)}</span>
+                                <span style="font-size:0.6rem; color:var(--text-secondary);">${new Date(rep.created_at).toLocaleString()}</span>
+                            </div>
+                        </div>
+                        ${quoteHtml}
+                        <div style="font-size:0.75rem; color:rgba(255,255,255,0.9); margin-bottom:6px;">${escapeHtml(rep.content)}</div>
+                        <div style="display:flex; justify-content:space-between; align-items:center;">
+                            <button class="like-reply-btn" data-id="${rep.id}" style="background:none; border:none; color:${liked?'#FF3B30':'rgba(255,255,255,0.6)'}; font-size:0.65rem;"><i class="fas fa-heart"></i> ${rep.likes_count||0}</button>
+                            <div style="display:flex; gap:8px;">
+                                <button class="quote-reply-btn" data-id="${rep.id}" data-username="${escapeHtml(rep.username)}" data-content="${escapeHtml(rep.content)}" style="background:none; border:none; color:#FFA500; font-size:0.65rem;"><i class="fas fa-comment-dots"></i> 回复</button>
+                                ${isOwn ? `<button class="delete-reply-btn" data-id="${rep.id}" style="background:none; border:none; color:#FF3B30; font-size:0.65rem;"><i class="fas fa-trash-alt"></i> 删除</button>` : ''}
+                            </div>
+                        </div>
+                    </div>
+                    <div style="margin-left: 20px; border-left: 2px solid rgba(255,106,0,0.3); padding-left: 8px;">
+                        ${buildReplyTree(replies, rep.id)}
+                    </div>
+                `;
+            }
+            return html;
+        }
+
+        async function openDetailModal(diaryId) {
+            const diary = allDiaries.find(d => d.id === diaryId); if (!diary) return;
+            const diaryReplies = allReplies.filter(r => r.diary_id === diaryId);
+            diaryReplies.sort((a,b) => new Date(a.created_at) - new Date(b.created_at));
+            const repliesTreeHtml = buildReplyTree(diaryReplies);
+            
+            modalContent.innerHTML = `
+                <div style="margin-bottom:12px;">
+                    <div style="display:flex; align-items:center; gap:8px; margin-bottom:8px;">
+                        <div class="diary-avatar" style="width:32px; height:32px;">
+                            ${renderAvatarHtml(diary.username)}
+                            ${!getUserAvatarUrl(diary.username) ? `<div class="avatar-text">${diary.username.charAt(0)}</div>` : ''}
+                        </div>
+                        <div class="diary-username">${escapeHtml(diary.username)}</div>
+                    </div>
+                    <h3 style="margin: 4px 0; font-size:1rem;">${escapeHtml(diary.title)}</h3>
+                    <div style="font-size:0.6rem; color:var(--text-secondary); margin-bottom:8px;">${diary.date_str}</div>
+                    <div style="white-space:pre-wrap; font-size:0.8rem; line-height:1.5; color:rgba(255,255,255,0.9);">${escapeHtml(diary.content)}</div>
+                </div>
+                <div style="border-top:1px solid rgba(255,255,255,0.15); padding-top:10px;">
+                    <strong style="font-size:0.8rem;">💬 共鸣 (${diaryReplies.length})</strong>
+                    <div id="repliesTreeContainer" style="margin-top:8px;">${repliesTreeHtml || '<div style="padding:10px; text-align:center; font-size:0.75rem; color:rgba(255,255,255,0.4);">静候第一声共鸣</div>'}</div>
+                    <div style="display:flex; gap:8px; margin-top:12px;">
+                        <input type="text" id="modalReplyInput" placeholder="写下你的共鸣..." style="flex:1;">
+                        <button id="modalReplySubmit">发送</button>
+                    </div>
+                </div>
+            `;
+            detailModal.style.display = "flex";
+            
+            document.getElementById("modalReplySubmit").onclick = async () => {
+                const content = document.getElementById("modalReplyInput").value.trim(); if (!content) return;
+                if (await addReply(diaryId, content, null)) { await refreshAllData(); openDetailModal(diaryId); }
+            };
+            document.querySelectorAll('.like-reply-btn').forEach(btn => btn.onclick = async (e) => {
+                const id = parseInt(btn.dataset.id);
+                await toggleLike('reply', id, 'reply');
+                openDetailModal(diaryId);
+            });
+            document.querySelectorAll('.delete-reply-btn').forEach(btn => btn.onclick = async (e) => {
+                if (confirm("删除这条回复？")) {
+                    await deleteReply(parseInt(btn.dataset.id));
                     await refreshAllData();
                     openDetailModal(diaryId);
                 }
-            }
-        });
-    }
+            });
+            document.querySelectorAll('.quote-reply-btn').forEach(btn => btn.onclick = async () => {
+                const parentId = parseInt(btn.dataset.id);
+                const parentUsername = btn.dataset.username;
+                const parentContent = btn.dataset.content;
+                const preview = parentContent.length>60 ? parentContent.slice(0,60)+"…" : parentContent;
+                const replyText = prompt(`回复 @${parentUsername}：\n“${preview}”\n\n输入你的回复：`);
+                if (replyText && replyText.trim()) {
+                    if (await addReply(diaryId, replyText.trim(), parentId)) {
+                        await refreshAllData();
+                        openDetailModal(diaryId);
+                    }
+                }
+            });
+        }
 
-    function escapeHtml(str) { if(!str) return ""; return str.replace(/[&<>]/g, m => m==='&'?'&amp;':m==='<'?'&lt;':'&gt;'); }
-    function openWriteModal() { writeModal.style.display = "flex"; document.getElementById("newTitle").value = ""; document.getElementById("newContent").value = ""; }
-    function closeWriteModal() { closeModalWithAnimation(writeModal); }
-    
-    document.getElementById("closeModalBtn").onclick = () => closeModalWithAnimation(detailModal);
-    detailModal.onclick = (e) => { if (e.target === detailModal) closeModalWithAnimation(detailModal); };
-    fab.addEventListener('click', openWriteModal);
-    document.getElementById("cancelWriteBtn")?.addEventListener("click", closeWriteModal);
-    document.getElementById("saveWriteBtn")?.addEventListener("click", async () => {
-        const title = document.getElementById("newTitle").value.trim(); const content = document.getElementById("newContent").value.trim();
-        if (await addDiary(title || "无题", content || "")) { closeWriteModal(); await refreshAllData(); }
-    });
-    searchInput.oninput = (e) => { searchKeyword = e.target.value; renderDiaryGrid(); };
-    
-    autoLogin(); loadSettings();
-    snap(0);
+        function escapeHtml(str) { if(!str) return ""; return str.replace(/[&<>]/g, m => m==='&'?'&amp;':m==='<'?'&lt;':'>'); }
+        function openWriteModal() { writeModal.style.display = "flex"; document.getElementById("newTitle").value = ""; document.getElementById("newContent").value = ""; }
+        function closeWriteModal() { closeModalWithAnimation(writeModal); }
+        
+        document.getElementById("closeModalBtn").onclick = () => closeModalWithAnimation(detailModal);
+        detailModal.onclick = (e) => { if (e.target === detailModal) closeModalWithAnimation(detailModal); };
+        fab.addEventListener('click', openWriteModal);
+        document.getElementById("cancelWriteBtn")?.addEventListener("click", closeWriteModal);
+        document.getElementById("saveWriteBtn")?.addEventListener("click", async () => {
+            const title = document.getElementById("newTitle").value.trim(); const content = document.getElementById("newContent").value.trim();
+            if (await addDiary(title || "无题", content || "")) { closeWriteModal(); await refreshAllData(); }
+        });
+        searchInput.oninput = (e) => { searchKeyword = e.target.value; renderDiaryGrid(); };
+
+        // ========== 人物介绍功能 ==========
+        function getSignatures() {
+            const stored = localStorage.getItem('profile_signatures');
+            return stored ? JSON.parse(stored) : {
+                '苹果': '你好。',
+                '周灿': '光而不耀，静水流深。',
+                '甜心': '保持甜蜜，保持锋利。'
+            };
+        }
+
+        function saveSignature(username, text) {
+            const sigs = getSignatures();
+            sigs[username] = text;
+            localStorage.setItem('profile_signatures', JSON.stringify(sigs));
+        }
+
+        function getDaysSince(dateStr) {
+            const start = new Date(dateStr);
+            const now = new Date();
+            const diff = now - start;
+            return Math.floor(diff / (1000 * 60 * 60 * 24));
+        }
+
+        function renderProfileCards() {
+            const container = document.getElementById('profileCardsContainer');
+            if (!container) return;
+            
+            const signatures = getSignatures();
+            let html = '';
+            
+            PROFILES.forEach(p => {
+                const days = getDaysSince(p.joinDate);
+                const signatureText = signatures[p.username] || '点击书写个性签名...';
+                const avatarUrl = PROFILE_AVATARS[p.username] || '';
+                const badge = p.badge || '成员';  // 使用单独配置的徽章
+                
+                html += `
+                    <div class="profile-card" data-username="${p.username}" style="border-left: 4px solid ${p.color}40;">
+                        <div class="profile-avatar" style="background: linear-gradient(145deg, ${p.color}60, rgba(255,255,255,0.05));">
+                            ${avatarUrl ? 
+                                `<img src="${avatarUrl}" alt="${p.username}" onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';">` : ''}
+                            <div class="avatar-text" style="${avatarUrl ? 'display:none;' : ''}">${p.username.charAt(0)}</div>
+                        </div>
+                        <div class="profile-info">
+                            <div class="profile-name">
+                                ${p.username}
+                                <span class="profile-badge"><i class="fas fa-star"></i> ${badge}</span>
+                            </div>
+                            <div class="profile-meta">
+                                <span><i class="fas fa-calendar-alt"></i> 同行 ${days} 天</span>
+                                <span><i class="fas fa-map-pin"></i> 银河系</span>
+                            </div>
+                            <div class="profile-signature">
+                                <i class="fas fa-quote-left" style="font-size:0.6rem;"></i> 
+                                <span class="sig-text">${escapeHtml(signatureText)}</span>
+                            </div>
+                        </div>
+                    </div>
+                `;
+            });
+            
+            container.innerHTML = html;
+            
+            // 绑定卡片点击事件：打开详情模态框
+            document.querySelectorAll('.profile-card').forEach(card => {
+                card.addEventListener('click', function(e) {
+                    // 如果点击的是可编辑签名区域，不跳转
+                    if (e.target.closest('.profile-signature.editable')) return;
+                    const username = this.dataset.username;
+                    openProfileDetail(username);
+                });
+            });
+            
+            // 绑定签名编辑事件（仅限本人）
+            document.querySelectorAll('.profile-signature.editable').forEach(el => {
+                el.addEventListener('click', function(e) {
+                    e.stopPropagation();
+                    const username = this.dataset.username;
+                    if (username !== currentUser) return;
+                    
+                    const currentSig = getSignatures()[username] || '';
+                    const newSig = prompt(`✏️ 写下你的新签名 (${username})`, currentSig);
+                    if (newSig !== null) {
+                        const trimmed = newSig.trim() || '✨';
+                        saveSignature(username, trimmed);
+                        renderProfileCards();
+                    }
+                });
+            });
+        }
+
+        function openProfileDetail(username) {
+            const profile = PROFILES.find(p => p.username === username);
+            const details = PROFILE_DETAILS[username] || { bio: '暂无介绍', tags: [], motto: '' };
+            const days = getDaysSince(profile.joinDate);
+            const avatarUrl = PROFILE_AVATARS[username] || '';
+            const signature = getSignatures()[username] || '';
+            const badge = profile.badge || '成员';
+            
+            profileDetailContent.innerHTML = `
+                <div style="text-align:center;">
+                    <div class="profile-detail-avatar" style="background: linear-gradient(145deg, ${profile.color}60, rgba(255,255,255,0.05));">
+                        ${avatarUrl ? 
+                            `<img src="${avatarUrl}" alt="${username}" onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';">` : ''}
+                        <div class="avatar-text" style="${avatarUrl ? 'display:none;' : ''}">${username.charAt(0)}</div>
+                    </div>
+                    <h2 style="font-size:1.5rem; margin-bottom:4px;">${username} <span class="profile-badge" style="margin-left:8px;"><i class="fas fa-star"></i> ${badge}</span></h2>
+                    <div style="display:flex; justify-content:center; gap:16px; margin-bottom:12px; color:var(--text-secondary); font-size:0.7rem;">
+                        <span><i class="fas fa-calendar-alt"></i> 同行 ${days} 天</span>
+                        <span><i class="fas fa-pen-fancy"></i> 日记 ${allDiaries.filter(d=>d.username===username).length} 篇</span>
+                    </div>
+                    <div class="profile-signature" style="display:inline-block; margin-bottom:16px;">
+                        <i class="fas fa-quote-left"></i> ${escapeHtml(signature)}
+                    </div>
+                </div>
+                <div class="profile-tags">
+                    ${details.tags.map(tag => `<span class="profile-tag">${tag}</span>`).join('')}
+                </div>
+                <div class="profile-bio">
+                    <p>${escapeHtml(details.bio)}</p>
+                    ${details.motto ? `<p style="margin-top:12px; font-style:italic; opacity:0.8;">“${escapeHtml(details.motto)}”</p>` : ''}
+                </div>
+                <div style="margin-top:16px;">
+                    <button id="viewUserDiariesBtn" style="width:100%; background:rgba(255,255,255,0.12); backdrop-filter:blur(8px); border:0.5px solid rgba(255,255,255,0.25); border-radius:14px; padding:10px; color:white; font-weight:600; cursor:pointer;">
+                        <i class="fas fa-book-open"></i> 查看 ${username} 的所有日记
+                    </button>
+                </div>
+            `;
+            
+            profileDetailModal.style.display = 'flex';
+            
+            document.getElementById('viewUserDiariesBtn').onclick = () => {
+                closeModalWithAnimation(profileDetailModal);
+                snap(0);
+                searchInput.value = username;
+                searchKeyword = username;
+                renderDiaryGrid();
+            };
+        }
+
+        // 关闭人物详情模态框
+        document.getElementById('closeProfileModalBtn').onclick = () => closeModalWithAnimation(profileDetailModal);
+        profileDetailModal.onclick = (e) => { if (e.target === profileDetailModal) closeModalWithAnimation(profileDetailModal); };
+
+        // 启动
+        autoLogin(); 
+        loadSettings();
+        snap(0);
+    })();
 </script>
 </body>
 </html>
